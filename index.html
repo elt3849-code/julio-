@@ -1,0 +1,3270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual Interactivo de Recetas Estandarizadas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+          },
+          colors: {
+            clinical: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#0d9488',
+              600: '#0f766e',
+              700: '#115e59',
+              800: '#134e4a',
+              900: '#042f2e'
+            },
+            cardiac: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              600: '#e11d48',
+              700: '#be123c'
+            },
+            resp: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              600: '#2563eb',
+              700: '#1d4ed8'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+      }
+      .print-break {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-teal-600 selection:text-white">
+
+  <!-- Notificación / Toast no intrusivo -->
+  <div id="toastBanner" class="no-print fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white shadow-xl transition-all duration-300">
+    <div class="flex items-center gap-2.5">
+      <span class="inline-block h-2.5 w-2.5 rounded-full bg-teal-400"></span>
+      <span id="toastMessage">Acción realizada</span>
+    </div>
+  </div>
+
+  <!-- Barra Superior Fija -->
+  <header id="top-bar" class="no-print sticky top-0 z-40 border-b border-slate-200/90 bg-white/95 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      <button type="button" onclick="navigateTo('inicio')" class="flex items-center gap-3 text-left group">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-600 text-white shadow-sm group-hover:bg-teal-700 transition">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <div>
+          <span class="block text-xs font-semibold uppercase tracking-wider text-teal-700">ASAN · Dietoterapia</span>
+          <span class="block text-sm font-bold text-slate-900 sm:text-base">Manual de Recetas Estandarizadas</span>
+        </div>
+      </button>
+
+      <nav class="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium">
+        <button type="button" onclick="navigateTo('inicio')" class="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 transition">
+          Portada
+        </button>
+        <button type="button" onclick="navigateTo('menu')" class="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 transition">
+          Menú y Moléculas
+        </button>
+        <button type="button" onclick="navigateTo('menu', 'Cardíacas')" class="rounded-lg bg-rose-50 px-3 py-2 text-rose-700 hover:bg-rose-100 transition">
+          Cardíacas
+        </button>
+        <button type="button" onclick="navigateTo('menu', 'Respiratorias')" class="rounded-lg bg-blue-50 px-3 py-2 text-blue-700 hover:bg-blue-100 transition">
+          Respiratorias
+        </button>
+        <button type="button" onclick="openRecipeModal(null)" class="rounded-lg bg-teal-600 px-3 py-2 font-semibold text-white shadow-sm hover:bg-teal-700 transition">
+          + Nueva Receta
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+
+    <!-- ========================================================= -->
+    <!-- VISTA 1: PORTADA PRINCIPAL                                -->
+    <!-- ========================================================= -->
+    <section id="view-inicio" class="space-y-8">
+      <!-- Hero Portada -->
+      <div class="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-teal-900 via-slate-900 to-slate-800 text-white shadow-xl">
+        <div class="grid gap-8 p-6 sm:p-10 lg:grid-cols-12 lg:items-center">
+          <div class="space-y-5 lg:col-span-7">
+            <div class="inline-flex flex-wrap items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-teal-200 ring-1 ring-white/20">
+              <span>Manual Dietoterapéutico</span>
+              <span>•</span>
+              <span>Enfermedades Cardíacas y Respiratorias</span>
+            </div>
+
+            <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
+              Manual de Recetas Estandarizadas para Enfermedades Cardiorrespiratorias
+            </h1>
+
+            <p class="text-base leading-relaxed text-slate-200 sm:text-lg">
+              Asignatura: <strong class="font-semibold text-white">Administración de Servicios</strong>.
+              Colección clínica de <strong class="font-semibold text-teal-300">fichas técnicas estandarizadas</strong> para Enfermedades Cardíacas y Enfermedades Respiratorias, organizadas por tiempos de comida con su respectiva molécula calórica de <strong class="font-semibold text-white">1400 kcal</strong>, aporte nutricional, ingredientes con gramajes exactos y preparación paso a paso.
+            </p>
+
+            <!-- Botones de Acceso Directo -->
+            <div class="flex flex-wrap gap-3 pt-2">
+              <button type="button" onclick="navigateTo('menu')" class="inline-flex items-center gap-2 rounded-xl bg-teal-500 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg hover:bg-teal-400 transition">
+                <span>Explorar Menú General</span>
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+              <button type="button" onclick="navigateTo('menu', 'Cardíacas')" class="inline-flex items-center gap-2 rounded-xl bg-rose-600/90 px-4 py-3 text-sm font-semibold text-white hover:bg-rose-600 transition">
+                <span>Enfermedades Cardíacas</span>
+              </button>
+              <button type="button" onclick="navigateTo('menu', 'Respiratorias')" class="inline-flex items-center gap-2 rounded-xl bg-blue-600/90 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-600 transition">
+                <span>Enfermedades Respiratorias</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tarjeta Resumen Académico -->
+          <div class="rounded-2xl bg-white/10 p-5 backdrop-blur-md ring-1 ring-white/15 lg:col-span-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/15 pb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-teal-300">Ficha del Manual</span>
+              <span id="heroTotalBadge" class="rounded-md bg-teal-500/20 px-2.5 py-0.5 text-xs font-semibold text-teal-200">0 Recetas Cargadas</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-center">
+              <div class="rounded-xl bg-rose-500/15 p-3.5 ring-1 ring-rose-400/25">
+                <div id="heroCardiacCount" class="text-2xl font-extrabold text-rose-200">0</div>
+                <div class="text-xs font-medium text-rose-100">Recetas Cardíacas</div>
+              </div>
+              <div class="rounded-xl bg-blue-500/15 p-3.5 ring-1 ring-blue-400/25">
+                <div id="heroRespCount" class="text-2xl font-extrabold text-blue-200">0</div>
+                <div class="text-xs font-medium text-blue-100">Recetas Respiratorias</div>
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs text-slate-200">
+              <p><strong class="text-white">Molécula Calórica (1400 kcal):</strong> Cardíaco (50% HC · 20% PRO · 30% LIP) | Respiratorio (40% HC · 20% PRO · 40% LIP).</p>
+              <p><strong class="text-white">Tiempos de comida:</strong> Desayuno, Media Mañana, Almuerzo, Media Tarde y Cena.</p>
+              <p><strong class="text-white">Contenido por ficha:</strong> Porciones, aporte nutricional (kcal, proteínas, lípidos, HC), ingredientes con gramajes exactos y procedimiento paso a paso.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos Académicos (Editables y Guardados en LocalStorage) -->
+      <div class="grid gap-6 lg:grid-cols-12">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-8">
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">Integrantes y Datos Académicos</h2>
+              <p class="text-sm text-slate-500">Los nombres completos de los integrantes y de la docente se guardan automáticamente en este navegador.</p>
+            </div>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Asignatura</label>
+              <input id="inputSubject" type="text" oninput="saveGroupInfo()" value="Administración de Servicios" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-800 focus:border-teal-600 focus:bg-white focus:outline-none" />
+            </div>
+            <div>
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Docente de la Asignatura</label>
+              <input id="inputProfessor" type="text" oninput="saveGroupInfo()" value="Lic. Ana Patricia Thorrez Michel" placeholder="Nombre completo del docente..." class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-teal-600 focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">Nombres Completos de los Integrantes</label>
+              <textarea id="inputMembers" rows="3" oninput="saveGroupInfo()" placeholder="Escribe un nombre completo por línea..." class="w-full whitespace-pre-line rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm leading-relaxed text-slate-800 focus:border-teal-600 focus:outline-none">Anahi Stefany Amachuy Avendaño
+Julio Alejandro Diaz Chigua
+Angie Elena Rios Chumacero</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acceso Rápido por Tiempo de Comida -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-4 flex flex-col justify-between space-y-5">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Acceso Directo por Tiempo de Comida</h2>
+            <p class="mt-1 text-sm text-slate-500">Salta directamente al menú filtrado por momento del día.</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <button type="button" onclick="navigateTo('menu', 'Todas', 'Desayuno')" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-teal-500 hover:bg-teal-50 hover:text-teal-800 transition">
+                Desayuno
+              </button>
+              <button type="button" onclick="navigateTo('menu', 'Todas', 'Media Mañana')" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-teal-500 hover:bg-teal-50 hover:text-teal-800 transition">
+                Media Mañana
+              </button>
+              <button type="button" onclick="navigateTo('menu', 'Todas', 'Almuerzo')" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-teal-500 hover:bg-teal-50 hover:text-teal-800 transition">
+                Almuerzo
+              </button>
+              <button type="button" onclick="navigateTo('menu', 'Todas', 'Media Tarde')" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-teal-500 hover:bg-teal-50 hover:text-teal-800 transition">
+                Media Tarde
+              </button>
+              <button type="button" onclick="navigateTo('menu', 'Todas', 'Cena')" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-teal-500 hover:bg-teal-50 hover:text-teal-800 transition">
+                Cena
+              </button>
+            </div>
+          </div>
+
+          <div class="rounded-xl bg-teal-50 p-4 border border-teal-100">
+            <p class="text-xs font-bold uppercase tracking-wider text-teal-800">Codificación Estandarizada</p>
+            <p class="mt-1 text-xs leading-relaxed text-teal-900">
+              Cada preparación cuenta con código único por tiempo de comida: <strong>DES</strong> (Desayuno), <strong>MER.M</strong> (Merienda Matutina), <strong>ALM</strong> (Almuerzo), <strong>MER.V</strong> (Merienda Vespertina) y <strong>CEN</strong> (Cena).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- VISTA 2: MENÚ DE NAVEGACIÓN, MOLÉCULAS CALÓRICAS Y RECETAS -->
+    <!-- ========================================================= -->
+    <section id="view-menu" class="hidden space-y-8">
+      <!-- Barra Superior de Navegación Interna -->
+      <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="navigateTo('inicio')" class="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-200 transition">
+            <span>← Volver al inicio</span>
+          </button>
+          <span class="text-sm font-bold text-slate-800 px-2">Menú Principal de Recetas Estandarizadas</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="window.print()" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+            Imprimir / Exportar PDF
+          </button>
+          <button type="button" onclick="openRecipeModal(null)" class="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-teal-700 transition">
+            + Agregar Receta
+          </button>
+        </div>
+      </div>
+
+      <!-- Moléculas Calóricas por Enfermedad (1400 kcal) -->
+      <div class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900 sm:text-2xl">Moléculas Calóricas por Patología (1400 kcal)</h2>
+            <p class="text-sm text-slate-500">Distribución calórica establecida para 1400 kcal/día: Cardíaco (50% HC · 20% Proteínas · 30% Lípidos) y Respiratorio (40% HC · 20% Proteínas · 40% Lípidos).</p>
+          </div>
+          <button type="button" onclick="saveCaloricMolecules()" class="rounded-xl bg-slate-800 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-900 transition">
+            Guardar Moléculas Calóricas
+          </button>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-2" id="moleculesContainer">
+          <!-- Renderizado dinámicamente por JS -->
+        </div>
+      </div>
+
+      <!-- Combinador Automático y Manual de Menú Diario (5 Tiempos de Comida) -->
+      <div class="rounded-2xl border border-teal-200 bg-gradient-to-br from-teal-50/80 via-white to-slate-50 p-5 sm:p-6 shadow-sm space-y-5">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-teal-100 px-3 py-1 text-xs font-bold text-teal-800">
+              Herramienta Dietoterapéutica
+            </span>
+            <h2 class="mt-2 text-xl font-extrabold text-slate-900">Combinador de Menú Diario (Automático y Manual)</h2>
+            <p class="text-sm text-slate-600">Combina automáticamente los 5 tiempos de comida (DES, MER.M, ALM, MER.V y CEN) o elige manualmente cada receta según la patología.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="combinerDiseaseSelect" onchange="renderManualCombinerSelectors()" class="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 focus:border-teal-600 focus:outline-none">
+              <option value="Cardíacas">Enfermedades Cardíacas</option>
+              <option value="Respiratorias">Enfermedades Respiratorias</option>
+              <option value="Todas">Combinación Mixta (Ambas)</option>
+            </select>
+            <button type="button" onclick="generateDailyCombination()" class="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-teal-700 transition">
+              <span>Combinador Automático</span>
+            </button>
+            <button type="button" onclick="toggleManualCombiner()" id="toggleManualCombinerBtn" class="inline-flex items-center gap-2 rounded-xl border border-teal-600 bg-white px-4 py-2.5 text-xs sm:text-sm font-bold text-teal-700 hover:bg-teal-50 transition">
+              <span>Combinador Manual</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Panel del Combinador Manual -->
+        <div id="manualCombinerPanel" class="hidden rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Selección Manual por Tiempo de Comida</h3>
+              <p class="text-xs text-slate-500">Elige una receta disponible para cada tiempo de comida y presiona "Aplicar Combinación Manual".</p>
+            </div>
+            <button type="button" onclick="applyManualCombination()" class="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition">
+              Aplicar Combinación Manual
+            </button>
+          </div>
+          <div id="manualCombinerGrid" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <!-- Selectores manuales generados dinámicamente -->
+          </div>
+        </div>
+
+        <div id="combinerResultContainer" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <!-- Renderizado dinámicamente por JS -->
+        </div>
+
+        <div id="combinerSummaryBar" class="hidden flex-wrap items-center justify-between gap-3 rounded-xl border border-teal-200 bg-white px-4 py-3 text-xs sm:text-sm">
+          <div class="font-medium text-slate-700">
+            Menú diario generado: <strong id="combinerTotalLabel" class="text-slate-900">5 tiempos de comida</strong>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="font-bold text-teal-800" id="combinerMacrosLabel">0 kcal · PRO: 0g · LIP: 0g · HC: 0g</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros por Enfermedad, Tiempos de Comida y Buscador por Código -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <!-- Pestañas de Enfermedad -->
+          <div class="flex flex-wrap gap-2" role="tablist">
+            <button type="button" id="tab-Todas" onclick="setDiseaseFilter('Todas')" class="disease-tab rounded-xl px-4 py-2.5 text-sm font-bold transition">
+              Todas (<span id="count-Todas">0</span>)
+            </button>
+            <button type="button" id="tab-Cardíacas" onclick="setDiseaseFilter('Cardíacas')" class="disease-tab rounded-xl px-4 py-2.5 text-sm font-bold transition">
+              Enfermedades Cardíacas (<span id="count-Cardíacas">0</span>)
+            </button>
+            <button type="button" id="tab-Respiratorias" onclick="setDiseaseFilter('Respiratorias')" class="disease-tab rounded-xl px-4 py-2.5 text-sm font-bold transition">
+              Enfermedades Respiratorias (<span id="count-Respiratorias">0</span>)
+            </button>
+          </div>
+
+          <!-- Buscadores: por Código Exacto y General -->
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div class="relative w-full sm:w-52">
+              <input id="codeSearchInput" type="text" oninput="renderRecipes()" placeholder="Código (ej. DES-001)..." class="w-full rounded-xl border border-teal-300 bg-teal-50/50 py-2 pl-9 pr-3 text-sm font-semibold uppercase text-slate-800 placeholder:normal-case placeholder:font-normal focus:border-teal-600 focus:bg-white focus:outline-none" />
+              <svg class="absolute left-3 top-2.5 h-4 w-4 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+              </svg>
+            </div>
+            <div class="relative w-full sm:w-64">
+              <input id="searchInput" type="text" oninput="renderRecipes()" placeholder="Buscar plato o ingrediente..." class="w-full rounded-xl border border-slate-300 bg-slate-50 py-2 pl-9 pr-3 text-sm text-slate-800 focus:border-teal-600 focus:bg-white focus:outline-none" />
+              <svg class="absolute left-3 top-2.5 h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtro por Tiempos de Comida con Siglas -->
+        <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+          <span class="mr-1 text-xs font-bold uppercase tracking-wider text-slate-500">Tiempo de comida:</span>
+          <button type="button" data-meal="Todos" onclick="setMealFilter('Todos')" class="meal-btn rounded-lg px-3 py-1.5 text-xs font-semibold transition">Todos</button>
+          <button type="button" data-meal="Desayuno" onclick="setMealFilter('Desayuno')" class="meal-btn rounded-lg px-3 py-1.5 text-xs font-semibold transition">Desayuno (DES)</button>
+          <button type="button" data-meal="Media Mañana" onclick="setMealFilter('Media Mañana')" class="meal-btn rounded-lg px-3 py-1.5 text-xs font-semibold transition">Merienda Matutina (MER.M)</button>
+          <button type="button" data-meal="Almuerzo" onclick="setMealFilter('Almuerzo')" class="meal-btn rounded-lg px-3 py-1.5 text-xs font-semibold transition">Almuerzo (ALM)</button>
+          <button type="button" data-meal="Media Tarde" onclick="setMealFilter('Media Tarde')" class="meal-btn rounded-lg px-3 py-1.5 text-xs font-semibold transition">Merienda Vespertina (MER.V)</button>
+          <button type="button" data-meal="Cena" onclick="setMealFilter('Cena')" class="meal-btn rounded-lg px-3 py-1.5 text-xs font-semibold transition">Cena (CEN)</button>
+        </div>
+      </div>
+
+      <!-- Contador de Resultados y Limpieza -->
+      <div class="flex flex-wrap items-center justify-between gap-2 text-sm text-slate-600">
+        <p id="resultsCounter">Mostrando 0 recetas estandarizadas</p>
+        <div class="flex items-center gap-4">
+          <button type="button" onclick="resetFilters()" class="font-semibold text-teal-700 hover:underline">Limpiar filtros</button>
+          <button type="button" onclick="confirmClearAllRecipes()" class="text-xs font-semibold text-slate-500 hover:text-rose-600 transition">Vaciar listado</button>
+        </div>
+      </div>
+
+      <!-- Grid de Fichas / Tarjetas -->
+      <div id="recipesGrid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Renderizado dinámicamente por JS -->
+      </div>
+
+      <!-- Botones de Retorno al Final del Menú -->
+      <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
+        <button type="button" onclick="navigateTo('inicio')" class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition">
+          ← Volver al inicio
+        </button>
+        <button type="button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+          ↑ Subir al menú superior
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- VISTA 3: FICHA TÉCNICA ESTANDARIZADA DETALLADA            -->
+    <!-- ========================================================= -->
+    <section id="view-ficha" class="hidden space-y-6">
+      <!-- Navegación Superior -->
+      <div class="no-print flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="navigateTo('menu')" class="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-teal-700 transition">
+            <span>← Volver al menú</span>
+          </button>
+          <button type="button" onclick="navigateTo('inicio')" class="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-200 transition">
+            <span>Volver al inicio</span>
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="editCurrentRecipe()" class="rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+            Editar Ficha
+          </button>
+          <button type="button" onclick="requestDeleteCurrentRecipe()" class="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs sm:text-sm font-semibold text-rose-700 hover:bg-rose-100 transition">
+            Eliminar Receta
+          </button>
+          <button type="button" onclick="window.print()" class="rounded-xl bg-slate-900 px-3.5 py-2 text-xs sm:text-sm font-semibold text-white hover:bg-slate-800 transition">
+            Imprimir / Guardar PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Cuerpo de la Ficha Técnica -->
+      <article id="fichaContent" class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 space-y-8">
+        <!-- Renderizado dinámicamente por JS -->
+      </article>
+
+      <!-- Botones de Navegación Interna al Final de Cada Receta -->
+      <div class="no-print flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="flex flex-wrap items-center gap-3">
+          <button type="button" onclick="navigateTo('inicio')" class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition">
+            ← Volver al inicio
+          </button>
+          <button type="button" onclick="navigateTo('menu')" class="rounded-xl bg-teal-600 px-5 py-3 text-sm font-semibold text-white hover:bg-teal-700 transition">
+            ← Volver al menú
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" id="prevRecipeBtn" onclick="stepRecipe(-1)" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+            ← Anterior receta
+          </button>
+          <button type="button" id="nextRecipeBtn" onclick="stepRecipe(1)" class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+            Siguiente receta →
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Pie de Página -->
+  <footer class="no-print mt-12 border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
+    <div class="mx-auto max-w-7xl px-4">
+      Manual Interactivo de Recetas Estandarizadas · Administración de Servicios de Alimentación y Nutrición
+    </div>
+  </footer>
+
+  <!-- ========================================================= -->
+  <!-- MODAL PARA CREAR / EDITAR FICHA TÉCNICA DE RECETA         -->
+  <!-- ========================================================= -->
+  <div id="recipeModal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs overflow-y-auto">
+    <div class="my-8 w-full max-w-3xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl sm:p-8 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <h3 id="modalTitle" class="text-xl font-bold text-slate-900">Nueva Ficha Técnica Estandarizada</h3>
+        <button type="button" onclick="closeRecipeModal()" class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700">
+          ✕
+        </button>
+      </div>
+
+      <form id="recipeForm" onsubmit="handleRecipeFormSubmit(event)" class="space-y-4">
+        <input type="hidden" id="editRecipeId" />
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label class="mb-1 block text-xs font-semibold uppercase text-slate-600">Nombre del Plato</label>
+            <input id="formName" type="text" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:border-teal-600 focus:outline-none" />
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-semibold uppercase text-slate-600">Enfermedad / Patología</label>
+            <select id="formDisease" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm focus:border-teal-600 focus:outline-none">
+              <option value="Cardíacas">Enfermedades Cardíacas</option>
+              <option value="Respiratorias">Enfermedades Respiratorias</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-semibold uppercase text-slate-600">Tiempo de Comida</label>
+            <select id="formMeal" onchange="updateSuggestedCodePreview()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm focus:border-teal-600 focus:outline-none">
+              <option value="Desayuno">Desayuno (DES)</option>
+              <option value="Media Mañana">Merienda Matutina (MER.M)</option>
+              <option value="Almuerzo">Almuerzo (ALM)</option>
+              <option value="Media Tarde">Merienda Vespertina (MER.V)</option>
+              <option value="Cena">Cena (CEN)</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-semibold uppercase text-slate-600">Código de Receta (ej. DES-001)</label>
+            <input id="formCode" type="text" required placeholder="DES-001" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-2 text-sm font-bold uppercase text-teal-800 focus:border-teal-600 focus:bg-white focus:outline-none" />
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-semibold uppercase text-slate-600">Número de Porciones</label>
+            <input id="formServings" type="number" min="1" value="1" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:border-teal-600 focus:outline-none" />
+          </div>
+          <div class="sm:col-span-2 grid grid-cols-2 gap-3 rounded-2xl border border-teal-100 bg-teal-50/50 p-3.5 sm:grid-cols-4">
+            <div>
+              <label class="mb-1 block text-[11px] font-bold uppercase text-teal-800">Kcal</label>
+              <input id="formKcal" type="number" step="0.1" min="0" value="0" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-800 focus:border-teal-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="mb-1 block text-[11px] font-bold uppercase text-teal-800">Proteínas (g)</label>
+              <input id="formProtein" type="number" step="0.1" min="0" value="0" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-800 focus:border-teal-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="mb-1 block text-[11px] font-bold uppercase text-teal-800">Lípidos (g)</label>
+              <input id="formLipids" type="number" step="0.1" min="0" value="0" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-800 focus:border-teal-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="mb-1 block text-[11px] font-bold uppercase text-teal-800">HC (g)</label>
+              <input id="formCarbs" type="number" step="0.1" min="0" value="0" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-800 focus:border-teal-600 focus:outline-none" />
+            </div>
+          </div>
+          <div class="sm:col-span-2 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-semibold uppercase text-slate-600">Ingredientes y Gramajes Exactos</label>
+              <button type="button" onclick="addIngredientRow()" class="inline-flex items-center gap-1 rounded-lg bg-teal-50 px-2.5 py-1 text-xs font-bold text-teal-700 ring-1 ring-teal-200 hover:bg-teal-100 transition">
+                + Agregar fila
+              </button>
+            </div>
+            <div class="grid grid-cols-12 gap-2 px-1 text-[11px] font-bold uppercase text-slate-400">
+              <div class="col-span-7">Ingrediente</div>
+              <div class="col-span-4">Gramaje</div>
+              <div class="col-span-1 text-center"></div>
+            </div>
+            <div id="ingredientRowsContainer" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+              <!-- Filas separadas de ingrediente y gramaje -->
+            </div>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="mb-1 block text-xs font-semibold uppercase text-slate-600">Procedimiento Paso a Paso (uno por línea)</label>
+            <textarea id="formSteps" rows="4" required placeholder="1. Pesar y lavar todos los ingredientes...&#10;2. Cocinar a fuego suave..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:border-teal-600 focus:outline-none"></textarea>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+          <button type="button" onclick="closeRecipeModal()" class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+            Cancelar
+          </button>
+          <button type="submit" class="rounded-xl bg-teal-600 px-5 py-2 text-sm font-semibold text-white hover:bg-teal-700">
+            Guardar Ficha Técnica
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 2. CATÁLOGO BASE: 25 RECETAS ESTANDARIZADAS PARA ENFERMEDADES CARDÍACAS
+    // =========================================================================
+    const CARDIAC_DOCUMENT_RECIPES = [
+      {
+        id: 'card-001',
+        code: 'DES-001',
+        disease: 'Cardíacas',
+        name: 'TOSTADAS INTEGRALES AL ACEITE DE OLIVA CON REVUELTO TIERNO DE CLARAS Y LECHE TIBIA',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '12 MINUTOS',
+        totalCost: '3.56 Bs',
+        kcal: 280,
+        protein: 14.1,
+        lipids: 9.4,
+        carbs: 34.7,
+        ingredients: [
+          { item: 'PAN INTEGRAL', qty: '49 g', cost: '0.60' },
+          { item: 'LECHE DESLACTOSADA', qty: '70 ml', cost: '1.50' },
+          { item: 'CLARA DE HUEVO DE GALLINA', qty: '65 g', cost: '1.16' },
+          { item: 'ACEITE DE OLIVA', qty: '5 g', cost: '0.30' }
+        ],
+        utensils: 'SARTÉN ANTIADHERENTE PEQUEÑA, RECIPIENTE HONDO, TENEDOR O BATIDOR MANUAL, ESPÁTULA, JARRA MEDIDORA, VASO Y PLATO PLANO.',
+        steps: [
+          'PESAR Y ALISTAR TODOS LOS INGREDIENTES SOBRE LA MESADA DE TRABAJO; MEDIR LA LECHE DESLACTOSADA EN LA JARRA Y SEPARAR LAS CLARAS DE HUEVO EN UN RECIPIENTE HONDO.',
+          'BATIR SUAVEMENTE LAS CLARAS CON TENEDOR HASTA LOGRAR UNA CONSISTENCIA HOMOGÉNEA SIN FORMAR ESPUMA EXCESIVA, EVITANDO AÑADIR SAL.',
+          'LLEVAR UNA SARTÉN ANTIADHERENTE A FUEGO BAJO, INCORPORAR LA MITAD DEL ACEITE DE OLIVA (2,5 G) Y DISTRIBUIR UNIFORMEMENTE POR TODA LA SUPERFICIE.',
+          'VERTER LAS CLARAS BATIDAS Y REMOVER LENTAMENTE CON LA ESPÁTULA DESDE LOS BORDES HACIA EL CENTRO DURANTE 2 A 3 MINUTOS HASTA QUE CUAJEN DE FORMA TIERNA Y JUGOSA SIN RESECARSE.',
+          'TOSTAR LIGERAMENTE LAS REBANADAS DE PAN INTEGRAL HASTA QUE ESTÉN DORADAS Y CROCANTES POR FUERA, ROCIAR ENCIMA EL ACEITE DE OLIVA RESTANTE (2,5 G) Y EMPLATAR JUNTO AL REVUELTO DE CLARAS.',
+          'ENTIBIAR LA LECHE DESLACTOSADA EN CACEROLA O MICROONDAS A TEMPERATURA MODERADA SIN QUE HIERVA Y SERVIR EN UN VASO COMO ACOMPAÑAMIENTO.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-002',
+        code: 'MER.M-001',
+        disease: 'Cardíacas',
+        name: 'PAN INTEGRAL CON TORTILLA DE CLARAS Y TOMATE',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '10 MINUTOS',
+        totalCost: '1.95 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 7,
+        carbs: 26.25,
+        ingredients: [
+          { item: 'PAN INTEGRAL', qty: '40 g', cost: '0.60' },
+          { item: 'CLARA DE HUEVO', qty: '59 g', cost: '0.98' },
+          { item: 'TOMATE OVALADO MADURO', qty: '19 g', cost: '0.07' },
+          { item: 'ACEITE DE OLIVA', qty: '5 g', cost: '0.30' }
+        ],
+        utensils: 'TABLA DE PICAR, CUCHILLO DE MESA/COCINA, SARTÉN ANTIADHERENTE, BOL PEQUEÑO, ESPÁTULA, PLATO.',
+        steps: [
+          'LAVAR MINUCIOSAMENTE EL TOMATE OVALADO MADURO BAJO AGUA CORRIENTE, RETIRAR EL PEDÚNCULO Y CORTARLO EN RODAJAS FINAS Y PAREJAS.',
+          'COLOCAR LAS CLARAS DE HUEVO EN UN BOL PEQUEÑO Y BATIR LIGERAMENTE DURANTE UNOS SEGUNDOS HASTA INTEGRAR BIEN.',
+          'CALENTAR UNA SARTÉN ANTIADHERENTE A FUEGO SUAVE, AÑADIR APROXIMADAMENTE 2 G DE ACEITE DE OLIVA Y VERTER LAS CLARAS EXTENDIÉNDOLAS PARA FORMAR UNA LÁMINA DELGADA.',
+          'COCINAR DURANTE 1 A 2 MINUTOS POR LADO HASTA QUE LA TORTILLA ESTÉ FIRME Y SUAVE, RETIRANDO DEL FUEGO ANTES DE QUE DORE EN EXCESO.',
+          'COLOCAR UNA REBANADA DE PAN INTEGRAL EN EL PLATO, DISTRIBUIR SOBRE ELLA LAS RODAJAS DE TOMATE Y LA TORTILLA DE CLARAS DOBLADA, ROCIAR EL ACEITE DE OLIVA RESTANTE (3 G) Y CUBRIR CON LA SEGUNDA REBANADA DE PAN.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-003',
+        code: 'ALM-001',
+        disease: 'Cardíacas',
+        name: 'PECHUGA DE POLLO A LA PLANCHA CON ARROZ INTEGRAL Y VERDURAS',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '4.45 Bs',
+        kcal: 420,
+        protein: 21,
+        lipids: 14,
+        carbs: 52.5,
+        ingredients: [
+          { item: 'PECHUGA DE POLLO SIN PIEL', qty: '110 g', cost: '2.60' },
+          { item: 'ARROZ INTEGRAL', qty: '60 g', cost: '0.90' },
+          { item: 'ZANAHORIA Y VAINITAS', qty: '75 g', cost: '0.55' },
+          { item: 'ACEITE DE OLIVA EXTRA VIRGEN', qty: '6 g', cost: '0.40' }
+        ],
+        utensils: 'OLLA PEQUEÑA, COLADOR, SARTÉN ANTIADHERENTE, TABLA DE PICAR, CUCHILLO, PLATO PLANO.',
+        steps: [
+          'ENJUAGAR EL ARROZ INTEGRAL Y COCERLO EN AGUA SIN SAL A FUEGO MEDIO HASTA QUE ESTÉ TIERNO; ESCURRIR Y RESERVAR TIBIO.',
+          'LAVAR Y CORTAR LA ZANAHORIA Y LAS VAINITAS EN TROZOS UNIFORMES Y COCER AL VAPOR O EN AGUA HASTA QUE ESTÉN TIERNAS.',
+          'COCINAR LA PECHUGA DE POLLO A LA PLANCHA CON ACEITE DE OLIVA A FUEGO MODERADO HASTA DORE SUAVEMENTE Y QUEDE JUGOSA POR DENTRO.',
+          'SERVIR EL POLLO ACOMPAÑADO DEL ARROZ INTEGRAL Y LAS VERDURAS.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-004',
+        code: 'MER.V-001',
+        disease: 'Cardíacas',
+        name: 'YOGURT LIGHT CON QUINUA, FRUTILLA Y ALMENDRAS PICADAS',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '20 MINUTOS',
+        totalCost: '4.87 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 7,
+        carbs: 26.25,
+        ingredients: [
+          { item: 'FRUTILLA', qty: '5 g', cost: '0.28' },
+          { item: 'YOGURT LIGHT', qty: '160 g', cost: '2.35' },
+          { item: 'ALMENDRAS', qty: '6 g', cost: '0.48' },
+          { item: 'QUINUA VAR. REAL', qty: '16 g', cost: '0.96' }
+        ],
+        utensils: 'COLADOR FINO, OLLA PEQUEÑA, CUCHILLO, TABLA PEQUEÑA, COPA O BOL DE POSTRE, CUCHARA.',
+        steps: [
+          'LAVAR BIEN LA QUINUA VARIEDAD REAL BAJO AGUA CORRIENTE HASTA ELIMINAR RESIDUOS DE SAPONINA Y COCERLA EN AGUA SIN SAL DURANTE UNOS 12 A 15 MINUTOS HASTA QUE EL GRANO ESTÉ BLANDO; ESCURRIR COMPLETAMENTE Y DEJAR ENFRIAR A TEMPERATURA AMBIENTE.',
+          'LAVAR Y DESINFECTAR LA FRUTILLA, RETIRAR EL CÁLIZ VERDE Y CORTARLA EN TROZOS PEQUEÑOS.',
+          'PICAR O FILETEAR LAS ALMENDRAS EN TROZOS PEQUEÑOS PARA FACILITAR LA MASTICACIÓN Y MEJORAR LA DISTRIBUCIÓN EN LA COPA.',
+          'VERTER EL YOGURT LIGHT SABOR FRUTILLA EN EL BOL O COPA, INCORPORAR LA QUINUA COCIDA Y FRÍA MEZCLANDO SUAVEMENTE Y CORONAR CON LOS TROZOS DE FRUTILLA Y LAS ALMENDRAS PICADAS JUSTO ANTES DE SERVIR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-005',
+        code: 'CEN-001',
+        disease: 'Cardíacas',
+        name: 'SALTEADO DE POLLO, ZAPALLITO Y PIMENTÓN VERDE CON ARROZ INTEGRAL',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '2.84 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 9,
+        carbs: 35,
+        ingredients: [
+          { item: 'POLLO PECHUGA', qty: '58 g', cost: '1.61' },
+          { item: 'PIMENTÓN VAR. VERDE', qty: '20 g', cost: '0.42' },
+          { item: 'ARROZ INTEGRAL', qty: '35 g', cost: '0.52' },
+          { item: 'ZAPALLITO', qty: '10 g', cost: '0.11' },
+          { item: 'ACEITE DE OLIVA', qty: '3 g', cost: '0.18' }
+        ],
+        utensils: 'OLLA PEQUEÑA, COLADOR, TABLA DE PICAR, CUCHILLO, SARTÉN ANTIADHERENTE, CUCHARA DE MADERA, PLATO.',
+        steps: [
+          'ENJUAGAR EL ARROZ INTEGRAL BAJO AGUA FRÍA Y COCERLO EN UNA OLLA CON SUFICIENTE AGUA SIN SAL A FUEGO MEDIO HASTA QUE EL GRANO ESTÉ TIERNO Y COCIDO; ESCURRIR Y MANTENER TIBIO.',
+          'LAVAR EL ZAPALLITO Y EL PIMENTÓN VERDE, RETIRAR SEMILLAS DEL PIMENTÓN Y CORTAR AMBAS HORTALIZAS EN CUBOS PEQUEÑOS PARA FAVORECER UNA COCCIÓN RÁPIDA Y DIGESTIÓN SUAVE.',
+          'DESMENUZAR O CORTAR EN TROZOS PEQUEÑOS LA PECHUGA DE POLLO PREVIAMENTE COCIDA.',
+          'CALENTAR EL ACEITE DE OLIVA EN LA SARTÉN A FUEGO SUAVE, INCORPORAR EL ZAPALLITO Y EL PIMENTÓN SALTEANDO POR 3 A 4 MINUTOS HASTA QUE ESTÉN TIERNOS; AGREGAR LA PECHUGA DE POLLO COCIDA, MEZCLAR SUAVEMENTE POR 1 A 2 MINUTOS PARA CALENTAR Y SERVIR ACOMPAÑADO DEL ARROZ INTEGRAL.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-006',
+        code: 'DES-002',
+        disease: 'Cardíacas',
+        name: 'PAN INTEGRAL CON QUESILLO SIN SAL, TOMATE Y ALMENDRAS',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '8 MINUTOS',
+        totalCost: '3.64 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 9.33,
+        carbs: 35,
+        ingredients: [
+          { item: 'PAN INTEGRAL', qty: '50 g', cost: '0.75' },
+          { item: 'QUESILLO SIN SAL', qty: '35 g', cost: '0.56' },
+          { item: 'TOMATE OVALADO MADURO', qty: '54 g', cost: '0.85' },
+          { item: 'ALMENDRA', qty: '3 g', cost: '0.42' }
+        ],
+        utensils: 'TABLA DE PICAR, CUCHILLO, PLATO PLANO, CUCHARA O TENEDOR PEQUEÑO.',
+        steps: [
+          'LAVAR BIEN EL TOMATE OVALADO MADURO BAJO AGUA CORRIENTE, RETIRAR EL PEDÚNCULO Y CORTARLO EN RODAJAS FINAS.',
+          'PICAR LAS ALMENDRAS EN TROZOS PEQUEÑOS PARA FACILITAR SU CONSUMO.',
+          'DESMENUZAR O CORTAR EN LÁMINAS FINAS EL QUESILLO SIN SAL.',
+          'COLOCAR LAS REBANADAS DE PAN INTEGRAL EN EL PLATO, DISTRIBUIR EL QUESILLO Y LAS RODAJAS DE TOMATE POR ENCIMA, Y ESPOLVOREAR LAS ALMENDRAS PICADAS ANTES DE SERVIR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-007',
+        code: 'MER.M-002',
+        disease: 'Cardíacas',
+        name: 'AVENA CON LECHE DESLACTOSADA Y NUECES',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '10 MINUTOS',
+        totalCost: '5.34 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 7,
+        carbs: 26.25,
+        ingredients: [
+          { item: 'LECHE DESLACTOSADA', qty: '140 ml', cost: '2.10' },
+          { item: 'AVENA COMERCIAL', qty: '28 g', cost: '1.14' },
+          { item: 'NUEZ', qty: '5 g', cost: '0.60' }
+        ],
+        utensils: 'OLLA PEQUEÑA O JARRA MEDIDORA, CUCHARA DE MADERA, BOL O TAZA, CUCHILLO PEQUEÑO.',
+        steps: [
+          'MEDIR LA LECHE DESLACTOSADA Y LLEVARLA A FUEGO SUAVE EN UNA OLLA PEQUEÑA (O ENTIBIAR CON CUIDADO SIN QUE HIERVA EN EXCESO).',
+          'INCORPORAR LA AVENA COMERCIAL Y REMOVER CONSTANTEMENTE DURANTE 5 A 7 MINUTOS HASTA QUE ESPESE Y LOS COPOS ESTÉN TIERNOS.',
+          'PICAR LAS NUECES EN TROZOS PEQUEÑOS.',
+          'SERVIR LA AVENA CALIENTE EN UN BOL O TAZA Y CORONAR CON LAS NUECES PICADAS JUSTO ANTES DE CONSUMIR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-008',
+        code: 'ALM-002',
+        disease: 'Cardíacas',
+        name: 'SALTEADO DE PECHUGA DE POLLO, ACELGA Y PEPINO CON PAPA IMILLA',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '4.70 Bs',
+        kcal: 420,
+        protein: 21,
+        lipids: 14,
+        carbs: 52.5,
+        ingredients: [
+          { item: 'POLLO PECHUGA', qty: '90 g', cost: '2.63' },
+          { item: 'PAPA CON CÁSCARA IMILLA', qty: '130 g', cost: '0.86' },
+          { item: 'ACELGA EN HOJAS', qty: '25 g', cost: '0.25' },
+          { item: 'ACEITE DE OLIVA', qty: '3 g', cost: '0.18' },
+          { item: 'AJO', qty: '5 g', cost: '0.17' },
+          { item: 'PEPINO', qty: '43 g', cost: '0.31' }
+        ],
+        utensils: 'OLLA PEQUEÑA, SARTÉN ANTIADHERENTE, TABLA DE PICAR, CUCHILLO, CUCHARA DE MADERA, PLATO PLANO.',
+        steps: [
+          'LAVAR MUY BIEN LA PAPA IMILLA CON SU CÁSCARA Y COCERLA EN AGUA A FUEGO MEDIO HASTA QUE ESTÉ TIERNA; ESCURRIR Y RESERVAR.',
+          'LAVAR Y DESINFECTAR LAS HOJAS DE ACELGA Y EL PEPINO. CORTAR LA ACELGA EN TIRAS, PICAR FINAMENTE EL AJO Y CORTAR EL PEPINO EN RODAJAS O CUBOS FRESCOS.',
+          'CORTAR LA PECHUGA DE POLLO COCIDA EN TROZOS PEQUEÑOS Y UNIFORMES.',
+          'CALENTAR EL ACEITE DE OLIVA A FUEGO MODERADO EN LA SARTÉN, SOFREÍR EL AJO Y LA ACELGA POR 2 A 3 MINUTOS, AÑADIR EL POLLO Y MEZCLAR 2 MINUTOS MÁS.',
+          'EMPLATAR EL SALTEADO JUNTO CON LA PAPA IMILLA Y EL PEPINO FRESCO.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-009',
+        code: 'MER.V-002',
+        disease: 'Cardíacas',
+        name: 'YOGURT LIGHT CON DURAZNO Y ALMENDRAS',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '6.61 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 7,
+        carbs: 26.25,
+        ingredients: [
+          { item: 'DURAZNO', qty: '25 g', cost: '0.35' },
+          { item: 'YOGURT LIGHT', qty: '240 g', cost: '4.90' },
+          { item: 'ALMENDRA', qty: '4 g', cost: '0.56' }
+        ],
+        utensils: 'CUCHILLO, TABLA PEQUEÑA, BOL O COPA DE POSTRE, CUCHARA.',
+        steps: [
+          'LAVAR EL DURAZNO Y CORTARLO EN TROZOS PEQUEÑOS; PICAR LAS ALMENDRAS.',
+          'COLOCAR EL YOGURT LIGHT EN EL BOL O COPA, MEZCLAR SUAVEMENTE CON LOS TROZOS DE DURAZNO Y LAS ALMENDRAS.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-010',
+        code: 'CEN-002',
+        disease: 'Cardíacas',
+        name: 'SALTEADO DE PECHUGA DE POLLO, ARVEJA Y ESPINACA CON ARROZ INTEGRAL',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '3.13 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 9,
+        carbs: 35,
+        ingredients: [
+          { item: 'PECHUGA DE POLLO', qty: '50 g', cost: '1.46' },
+          { item: 'ARVEJA FRESCA', qty: '21 g', cost: '0.37' },
+          { item: 'ARROZ INTEGRAL', qty: '35 g', cost: '0.88' },
+          { item: 'ESPINACA HOJA COCIDA', qty: '16 g', cost: '0.24' },
+          { item: 'ACEITE DE OLIVA', qty: '3 g', cost: '0.18' }
+        ],
+        utensils: 'OLLA PEQUEÑA, COLADOR, SARTÉN ANTIADHERENTE, CUCHARA DE MADERA, PLATO.',
+        steps: [
+          'ENJUAGAR EL ARROZ INTEGRAL Y COCERLO EN AGUA SIN SAL A FUEGO MEDIO HASTA QUE EL GRANO ESTÉ TIERNO; ESCURRIR Y RESERVAR TIBIO.',
+          'COCER LA ARVEJA FRESCA HASTA QUE ESTÉ TIERNA Y ESCURRIR. TENER LISTA LA ESPINACA COCIDA Y PICADA, Y CORTAR LA PECHUGA DE POLLO COCIDA EN TROZOS PEQUEÑOS.',
+          'CALENTAR EL ACEITE DE OLIVA A FUEGO SUAVE EN LA SARTÉN, INCORPORAR LA ARVEJA, LA ESPINACA Y EL POLLO, Y SALTEAR SUAVEMENTE DURANTE 2 A 3 MINUTOS PARA INTEGRAR.',
+          'SERVIR EL SALTEADO ACOMPAÑADO DEL ARROZ INTEGRAL.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-011',
+        code: 'DES-003',
+        disease: 'Cardíacas',
+        name: 'YOGURT LIGHT CON QUINUA Y MANÍ',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '18 MINUTOS',
+        totalCost: '6.85 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 9.33,
+        carbs: 35,
+        ingredients: [
+          { item: 'QUINUA VAR. REAL', qty: '13 g', cost: '0.62' },
+          { item: 'YOGURT LIGHT', qty: '270 g', cost: '5.51' },
+          { item: 'MANÍ SIN CASCARILLA', qty: '7 g', cost: '0.12' }
+        ],
+        utensils: 'COLADOR FINO, OLLA PEQUEÑA, CUCHARA, BOL O VASO ANCHO.',
+        steps: [
+          'LAVAR REPETIDAMENTE LA QUINUA REAL BAJO CHORRO DE AGUA FRÍA HASTA ELIMINAR RESIDUOS DE SAPONINA.',
+          'COCER LA QUINUA EN AGUA SIN SAL DURANTE 12 A 15 MINUTOS HASTA QUE ESTÉ COCIDA, ESCURRIR BIEN Y DEJAR ENFRIAR A TEMPERATURA AMBIENTE.',
+          'TRITURAR O PICAR LIGERAMENTE EL MANÍ SIN CASCARILLA.',
+          'SERVIR EL YOGURT LIGHT EN EL BOL, INCORPORAR LA QUINUA FRÍA MEZCLANDO SUAVEMENTE Y ESPOLVOREAR EL MANÍ ENCIMA AL MOMENTO DE SERVIR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-012',
+        code: 'MER.M-003',
+        disease: 'Cardíacas',
+        name: 'TORTILLA INTEGRAL DE CLARA DE HUEVO, ACELGA Y QUESILLO',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '15 MINUTOS',
+        totalCost: '2.69 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 7,
+        carbs: 26.25,
+        ingredients: [
+          { item: 'CLARA DE HUEVO DE GALLINA', qty: '40 g', cost: '0.72' },
+          { item: 'HARINA DE TRIGO INTEGRAL', qty: '30 g', cost: '0.27' },
+          { item: 'ACELGA HOJAS', qty: '31 g', cost: '0.31' },
+          { item: 'QUESILLO SIN SAL', qty: '19 g', cost: '0.30' },
+          { item: 'ACEITE DE OLIVA', qty: '2 g', cost: '0.12' },
+          { item: 'AJO', qty: '5 g', cost: '3.32' }
+        ],
+        utensils: 'BOL O RECIPIENTE HONDO, BATIDOR MANUAL O TENEDOR, TABLA DE PICAR, CUCHILLO, SARTÉN ANTIADHERENTE, ESPÁTULA, PLATO.',
+        steps: [
+          'LAVAR LAS HOJAS DE ACELGA, PICARLAS FINAMENTE Y PICAR TAMBIÉN EL AJO; DESMENUZAR EL QUESILLO SIN SAL.',
+          'EN UN RECIPIENTE HONDO, MEZCLAR LA CLARA DE HUEVO CON LA HARINA DE TRIGO INTEGRAL HASTA OBTENER UNA MASA HOMOGÉNEA Y SIN GRUMOS.',
+          'CALENTAR UNA SARTÉN ANTIADHERENTE CON LA MITAD DEL ACEITE DE OLIVA A FUEGO SUAVE, SALTEAR BREVEMENTE EL AJO Y LA ACELGA (1 A 2 MINUTOS) Y RETIRAR.',
+          'AÑADIR EL RESTO DEL ACEITE A LA SARTÉN, VERTER LA MEZCLA DE CLARA Y HARINA FORMANDO UNA TORTILLA, INCORPORAR LA ACELGA Y EL QUESILLO EN EL CENTRO, COCINAR 1 A 2 MINUTOS POR LADO HASTA CUAJAR Y DOBLAR AL SERVIR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-013',
+        code: 'ALM-003',
+        disease: 'Cardíacas',
+        name: 'TRUCHA CON ENSALADA DE ACELGA, PEPINO Y PALTA Y ARROZ INTEGRAL',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '18.39 Bs',
+        kcal: 420,
+        protein: 21,
+        lipids: 14,
+        carbs: 52.5,
+        ingredients: [
+          { item: 'TRUCHA FILETE', qty: '85 g', cost: '12.33' },
+          { item: 'ARROZ INTEGRAL', qty: '55 g', cost: '1.38' },
+          { item: 'ACELGA HOJAS', qty: '25 g', cost: '0.25' },
+          { item: 'ACEITE DE OLIVA', qty: '4 g', cost: '0.24' },
+          { item: 'AJO', qty: '70 g', cost: '2.32' },
+          { item: 'PEPINO', qty: '54 g', cost: '0.38' },
+          { item: 'PALTA VER. COMÚN', qty: '42 g', cost: '1.19' }
+        ],
+        utensils: 'OLLA PEQUEÑA, COLADOR, SARTÉN ANTIADHERENTE, TABLA DE PICAR, CUCHILLO, ESPÁTULA O CUCHARA, PLATO PLANO.',
+        steps: [
+          'ENJUAGAR EL ARROZ INTEGRAL Y COCERLO EN AGUA SIN SAL A FUEGO MEDIO HASTA QUE ESTÉ TIERNO; ESCURRIR Y RESERVAR.',
+          'LAVAR Y PICAR LA ACELGA Y EL AJO; CORTAR EL PEPINO EN RODAJAS O CUBOS Y LA PALTA EN LÁMINAS O CUBOS.',
+          'COCINAR EL FILETE DE TRUCHA EN SARTÉN ANTIADHERENTE CON UNA PEQUEÑA PORCIÓN DEL ACEITE DE OLIVA A FUEGO MODERADO HASTA QUE ESTÉ COCIDO POR DENTRO Y DORADO SUAVEMENTE.',
+          'UTILIZAR EL ACEITE RESTANTE Y EL AJO PARA SALTEAR BREVEMENTE LA ACELGA (1 A 2 MINUTOS).',
+          'EMPLATAR LA TRUCHA JUNTO AL ARROZ INTEGRAL, LA ACELGA, EL PEPINO Y LA PALTA.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-014',
+        code: 'MER.V-003',
+        disease: 'Cardíacas',
+        name: 'YOGURT LIGHT CON FRUTILLA Y ALMENDRA',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '7.75 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 7,
+        carbs: 26.25,
+        ingredients: [
+          { item: 'FRUTILLA', qty: '53 g', cost: '1.46' },
+          { item: 'YOGURT LIGHT', qty: '235 g', cost: '4.79' },
+          { item: 'ALMENDRA', qty: '5 g', cost: '0.70' }
+        ],
+        utensils: 'CUCHILLO, TABLA PEQUEÑA, COPA O BOL DE POSTRE, CUCHARA.',
+        steps: [
+          'LAVAR Y DESINFECTAR LAS FRUTILLAS, RETIRAR EL CÁLIZ VERDE Y CORTARLAS EN TROZOS PEQUEÑOS.',
+          'PICAR LAS ALMENDRAS EN TROZOS PEQUEÑOS.',
+          'VERTER EL YOGURT LIGHT EN EL BOL O COPA Y CORONAR CON LOS TROZOS DE FRUTILLA Y LAS ALMENDRAS JUSTO ANTES DE SERVIR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-015',
+        code: 'CEN-003',
+        disease: 'Cardíacas',
+        name: 'SALTEADO DE PECHUGA DE POLLO Y TOMATE CON ARROZ INTEGRAL',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '2.92 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 9,
+        carbs: 35,
+        ingredients: [
+          { item: 'POLLO PECHO', qty: '58 g', cost: '1.69' },
+          { item: 'TOMATE REDONDO MADURO', qty: '16 g', cost: '0.12' },
+          { item: 'ARROZ INTEGRAL', qty: '37 g', cost: '0.93' },
+          { item: 'ACEITE DE OLIVA', qty: '3 g', cost: '0.18' }
+        ],
+        utensils: 'OLLA PEQUEÑA, COLADOR, SARTÉN ANTIADHERENTE, CUCHILLO, TABLA DE PICAR, CUCHARA DE MADERA, PLATO.',
+        steps: [
+          'ENJUAGAR EL ARROZ INTEGRAL Y COCERLO EN AGUA SIN SAL A FUEGO MEDIO HASTA QUE ESTÉ TIERNO; ESCURRIR Y MANTENER TIBIO.',
+          'LAVAR EL TOMATE REDONDO MADURO Y CORTARLO EN CUBOS PEQUEÑOS; CORTAR LA PECHUGA DE POLLO COCIDA EN TROZOS O CUBOS PEQUEÑOS.',
+          'CALENTAR EL ACEITE DE OLIVA A FUEGO SUAVE EN LA SARTÉN, INCORPORAR EL TOMATE Y SALTEAR 2 MINUTOS, LUEGO AGREGAR EL POLLO Y MEZCLAR 1 A 2 MINUTOS MÁS HASTA CALENTAR.',
+          'SERVIR EL SALTEADO ACOMPAÑADO DEL ARROZ INTEGRAL.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-016',
+        code: 'DES-004',
+        disease: 'Cardíacas',
+        name: 'PANQUEQUE INTEGRAL',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '10 MINUTOS',
+        totalCost: '3.44 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 9.33,
+        carbs: 35,
+        ingredients: [
+          { item: 'AVENA COMERCIAL', qty: '17 g', cost: '0.69' },
+          { item: 'CLARA DE HUEVO DE GALLINA', qty: '31 g', cost: '0.56' },
+          { item: 'LECHE DESLACTOSADA', qty: '115 ml', cost: '1.73' },
+          { item: 'HARINA DE TRIGO INTEGRAL', qty: '19 g', cost: '0.17' },
+          { item: 'MANÍ SIN CASCARILLA VAR. PERLA', qty: '11 g', cost: '0.19' }
+        ],
+        utensils: 'BOL O RECIPIENTE HONDO, BATIDOR MANUAL O TENEDOR, SARTÉN ANTIADHERENTE, ESPÁTULA, VASO O BOL.',
+        steps: [
+          'EN UN RECIPIENTE HONDO, BATIR LIGERAMENTE LA CLARA DE HUEVO E INTEGRAR LA AVENA COMERCIAL Y LA HARINA DE TRIGO INTEGRAL HASTA FORMAR UNA MEZCLA UNIFORME.',
+          'COCINAR LA MEZCLA EN SARTÉN ANTIADHERENTE A FUEGO SUAVE POR 1 A 2 MINUTOS POR LADO HASTA QUE ESTÉ BIEN COCIDA Y FIRME.',
+          'PICAR EL MANÍ SIN CASCARILLA VARIEDAD PERLA Y ESPOLVOREAR SOBRE LA PREPARACIÓN.',
+          'ENTIBIAR LA LECHE DESLACTOSADA SIN QUE HIERVA Y SERVIR EN UN VASO O BOL COMO ACOMPAÑAMIENTO.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-017',
+        code: 'MER.M-004',
+        disease: 'Cardíacas',
+        name: 'PAN INTEGRAL CON TORTILLA DE CLARA Y PALTA',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '10 MINUTOS',
+        totalCost: '2.46 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 7,
+        carbs: 26.25,
+        ingredients: [
+          { item: 'CLARA DE HUEVO DE GALLINA', qty: '63 g', cost: '1.13' },
+          { item: 'PAN INTEGRAL', qty: '37 g', cost: '0.56' },
+          { item: 'PALTA VAR. MEDIANO', qty: '23 g', cost: '0.65' },
+          { item: 'ACEITE DE OLIVA', qty: '2 g', cost: '0.12' }
+        ],
+        utensils: 'BOL PEQUEÑO, TENEDOR O BATIDOR MANUAL, SARTÉN ANTIADHERENTE, ESPÁTULA, CUCHILLO, PLATO.',
+        steps: [
+          'BATIR LIGERAMENTE LAS CLARAS DE HUEVO EN UN BOL PEQUEÑO.',
+          'CALENTAR UNA SARTÉN ANTIADHERENTE A FUEGO SUAVE CON EL ACEITE DE OLIVA, VERTER LAS CLARAS Y COCINAR 1 A 2 MINUTOS POR LADO HASTA QUE CUAJEN Y QUEDEN SUAVES.',
+          'CORTAR LA PALTA EN LÁMINAS O APLASTAR LIGERAMENTE CON UN TENEDOR.',
+          'ARMAR EL SÁNDWICH O TOSTADA COLOCANDO LA TORTILLA DE CLARA Y LA PALTA SOBRE EL PAN INTEGRAL Y SERVIR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-018',
+        code: 'ALM-004',
+        disease: 'Cardíacas',
+        name: 'TRUCHA CON CAMOTE BLANCO, ACELGA Y ZAPALLO MADURO',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '17.27 Bs',
+        kcal: 420,
+        protein: 21,
+        lipids: 14,
+        carbs: 52.5,
+        ingredients: [
+          { item: 'TRUCHA FILETE', qty: '95 g', cost: '13.78' },
+          { item: 'CAMOTE BLANCO', qty: '200 g', cost: '1.72' },
+          { item: 'ACELGA HOJAS', qty: '47 g', cost: '0.47' },
+          { item: 'ACEITE DE OLIVA', qty: '9 g', cost: '0.54' },
+          { item: 'AJO', qty: '10 g', cost: '3.32' },
+          { item: 'ZAPALLO MADURO', qty: '5 g', cost: '0.03' }
+        ],
+        utensils: 'OLLA PEQUEÑA, SARTÉN ANTIADHERENTE, TABLA DE PICAR, CUCHILLO, ESPÁTULA O CUCHARA DE MADERA, PLATO PLANO.',
+        steps: [
+          'PELAR Y CORTAR EL CAMOTE BLANCO Y EL ZAPALLO MADURO EN TROZOS; COCERLOS EN AGUA A FUEGO MEDIO HASTA QUE ESTÉN TIERNOS Y ESCURRIR.',
+          'LAVAR Y PICAR LAS HOJAS DE ACELGA Y EL AJO.',
+          'COCINAR EL FILETE DE TRUCHA EN SARTÉN ANTIADHERENTE CON UNA PARTE DEL ACEITE DE OLIVA A FUEGO MODERADO HASTA QUE ESTÉ COCIDO; EN EL ACEITE RESTANTE SALTEAR BREVEMENTE EL AJO Y LA ACELGA.',
+          'EMPLATAR LA TRUCHA ACOMPAÑADA DEL CAMOTE BLANCO, LA ACELGA Y EL ZAPALLO MADURO.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-019',
+        code: 'MER.V-004',
+        disease: 'Cardíacas',
+        name: 'YOGURT LIGHT CON MANZANA Y ALMENDRA',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '6.30 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 7,
+        carbs: 26.25,
+        ingredients: [
+          { item: 'MANZANA CON CÁSCARA', qty: '50 g', cost: '1.00' },
+          { item: 'YOGURT LIGHT', qty: '180 g', cost: '0.24' },
+          { item: 'ALMENDRA', qty: '6 g', cost: '0.83' }
+        ],
+        utensils: 'CUCHILLO, TABLA PEQUEÑA, BOL O COPA DE POSTRE, CUCHARA.',
+        steps: [
+          'LAVAR MUY BIEN LA MANZANA CON SU CÁSCARA, RETIRAR EL CENTRO CON SEMILLAS Y CORTARLA EN CUBOS PEQUEÑOS.',
+          'PICAR LAS ALMENDRAS EN TROZOS PEQUEÑOS.',
+          'COLOCAR EL YOGURT LIGHT EN EL BOL O COPA Y AGREGAR LOS TROZOS DE MANZANA Y LAS ALMENDRAS JUSTO ANTES DE SERVIR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-020',
+        code: 'CEN-004',
+        disease: 'Cardíacas',
+        name: 'SÁBALO COCIDO CON TOMATE Y VAINITAS Y ARROZ INTEGRAL',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '3.86 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 9,
+        carbs: 35,
+        ingredients: [
+          { item: 'SÁBALO COCIDO', qty: '50 g', cost: '2.00' },
+          { item: 'TOMATE REDONDO MADURO', qty: '31 g', cost: '0.24' },
+          { item: 'ARROZ INTEGRAL', qty: '30 g', cost: '0.75' },
+          { item: 'VAINITAS', qty: '15 g', cost: '0.17' },
+          { item: 'ACEITE DE OLIVA', qty: '5 g', cost: '0.30' }
+        ],
+        utensils: 'OLLA PEQUEÑA, COLADOR, SARTÉN ANTIADHERENTE, CUCHILLO, TABLA DE PICAR, CUCHARA DE MADERA, PLATO.',
+        steps: [
+          'ENJUAGAR EL ARROZ INTEGRAL Y COCERLO EN AGUA SIN SAL A FUEGO MEDIO HASTA QUE ESTÉ TIERNO; ESCURRIR Y MANTENER TIBIO.',
+          'LAVAR LAS VAINITAS Y EL TOMATE REDONDO MADURO; CORTAR LAS VAINITAS EN TROZOS PEQUEÑOS Y EL TOMATE EN CUBOS. TENER LISTO EL SÁBALO COCIDO Y DESMENUZADO O EN PORCIÓN LIMPIA.',
+          'CALENTAR EL ACEITE DE OLIVA A FUEGO SUAVE EN LA SARTÉN, SALTEAR LAS VAINITAS Y EL TOMATE DURANTE 2 A 3 MINUTOS, AGREGAR EL SÁBALO COCIDO PARA ENTIBIAR SUAVEMENTE (1 A 2 MINUTOS) Y SERVIR JUNTO AL ARROZ INTEGRAL.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-021',
+        code: 'DES-005',
+        disease: 'Cardíacas',
+        name: 'AVENA Y QUINUA ACOMPAÑADA DE PAPAYA',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '10 MINUTOS',
+        totalCost: '4.00 Bs',
+        kcal: 283.95,
+        protein: 14.6,
+        lipids: 8.61,
+        carbs: 37.03,
+        ingredients: [
+          { item: 'LECHE DESLACTOSADA', qty: '100 ml', cost: '1.34' },
+          { item: 'CLARA DE HUEVO DE GRANJA', qty: '50 g', cost: '0.89' },
+          { item: 'ALMENDRA', qty: '5 g', cost: '0.42' },
+          { item: 'PAPAYA', qty: '25 g', cost: '0.23' },
+          { item: 'GALLETAS INTEGRALES', qty: '15 g', cost: '0.31' },
+          { item: 'QUINUA VARIEDAD REAL', qty: '12 g', cost: '0.65' },
+          { item: 'AVENA COMERCIAL', qty: '12 g', cost: '0.15' }
+        ],
+        utensils: 'LICUADORA, OLLA PEQUEÑA, CUCHARA DE COCINA, CUCHILLO, TABLA DE PICAR, PLATO, VASO O RECIPIENTE PARA SERVIR.',
+        steps: [
+          'LAVAR LA QUINUA Y LICUARLA JUNTO CON LA AVENA Y LAS ALMENDRAS.',
+          'COLOCAR LA MEZCLA EN UNA OLLA CON UN POCO DE AGUA Y COCINAR, REMOVIENDO HASTA QUE ESPESE.',
+          'AL SERVIR, INCORPORAR LA LECHE DESLACTOSADA Y MEZCLAR.',
+          'COCINAR LAS CLARAS DE HUEVO APARTE Y ACOMPAÑARLAS CON LAS GALLETAS INTEGRALES Y LA PAPAYA PICADA.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1495214783159-3503fd1b572d?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-022',
+        code: 'MER.M-005',
+        disease: 'Cardíacas',
+        name: 'BATIDO CREMOSO DE FRUTILLA, PLÁTANO Y AVENA',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '3.31 Bs',
+        kcal: 203.05,
+        protein: 11.53,
+        lipids: 6.55,
+        carbs: 24.56,
+        ingredients: [
+          { item: 'LECHE DE VACA', qty: '210 ml', cost: '1.68' },
+          { item: 'FRUTILLA', qty: '30 g', cost: '0.83' },
+          { item: 'PLÁTANO', qty: '35 g', cost: '0.42' },
+          { item: 'CLARA DE HUEVO', qty: '15 g', cost: '0.27' },
+          { item: 'AVENA COMERCIAL', qty: '5 g', cost: '0.11' }
+        ],
+        utensils: 'VASO, TABLA DE PICAR, LICUADORA, BALANZA, CUCHARA, CUCHILLO.',
+        steps: [
+          'LAVAR LAS FRUTILLAS COMO PELAR EL PLÁTANO Y PESAR TODOS LOS INGREDIENTES.',
+          'COLOCAR LA LECHE COMO LA FRUTILLA, EL PLÁTANO, LA CLARA DE HUEVO PASTEURIZADA Y LA AVENA EN LA LICUADORA.',
+          'LICUAR HASTA OBTENER UNA MEZCLA CREMOSA Y HOMOGÉNEA.',
+          'SERVIR INMEDIATAMENTE.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-023',
+        code: 'ALM-005',
+        disease: 'Cardíacas',
+        name: 'TRUCHA A LA PLANCHA CON PAPA COCIDA Y ENSALADA',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '6.38 Bs',
+        kcal: 420,
+        protein: 21,
+        lipids: 14,
+        carbs: 52.2,
+        ingredients: [
+          { item: 'TOMATE REDONDO', qty: '15 g', cost: '0.04' },
+          { item: 'CEBOLLA MORADA', qty: '8 g', cost: '0.03' },
+          { item: 'QUESILLO', qty: '15 g', cost: '0.24' },
+          { item: 'LIMÓN COMÚN', qty: '5 g', cost: '0.05' },
+          { item: 'BERRO', qty: '20 g', cost: '0.16' },
+          { item: 'PAPA SANI YMILLA', qty: '300 g', cost: '2.34' },
+          { item: 'TRUCHA FRESCA', qty: '70 g', cost: '3.50' },
+          { item: 'ACEITE DE OLIVA', qty: '8 g', cost: '0.48' }
+        ],
+        utensils: 'BANDEJA DE HORNO, CUCHARA, CUCHILLO, TABLA DE PICAR, CUCHARA DE MADERA, PLATO, RALLADORA.',
+        steps: [
+          'COCINAR HASTA QUE EL ARROZ INTEGRAL ESTÉ LISTO.',
+          'LAMINAR LA PECHUGA DE POLLO PARA PODER ENROLLARLA Y SAZONARLA CON AJO PICADO, PEREJIL, PIMENTÓN VERDE FINAMENTE PICADO.',
+          'SUJETAR CON UN HILO CULINARIO Y PONERLA AL HORNO DURANTE 30 MINUTOS.',
+          'LAVAR Y CORTAR EL PEPINO, EL TOMATE OVALADO, LA CEBOLLA MORADA.',
+          'MEZCLAR LAS VERDURAS PARA LA ENSALADA AÑADIENDO EL ACEITE RESTANTE.',
+          'SERVIR EL ENROLLADO DE PECHUGA DE POLLO JUNTO A LA ENSALADA Y EL ARROZ INTEGRAL.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-024',
+        code: 'MER.V-005',
+        disease: 'Cardíacas',
+        name: 'REVUELTO DE CLARA CON VERDURAS Y TRIMATE',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '10 MINUTOS',
+        totalCost: '2.32 Bs',
+        kcal: 208.04,
+        protein: 10.5,
+        lipids: 6.54,
+        carbs: 26.82,
+        ingredients: [
+          { item: 'PALTA', qty: '35 g', cost: '0.62' },
+          { item: 'TRIMATE INFUSIÓN', qty: '5 g', cost: '0.08' },
+          { item: 'ESPINACA', qty: '8 g', cost: '0.10' },
+          { item: 'PIMENTÓN ROJO', qty: '20 g', cost: '0.28' },
+          { item: 'CEBOLLA BLANCA', qty: '20 g', cost: '0.10' },
+          { item: 'CLARA DE HUEVO', qty: '60 g', cost: '0.97' },
+          { item: 'PAN REDONDO S/C', qty: '30 g', cost: '0.17' }
+        ],
+        utensils: 'SARTÉN, CUCHILLO, TABLA PARA PICAR, ESPÁTULA, TAZA, PLATO.',
+        steps: [
+          'PICAR LA CEBOLLA, EL PIMENTÓN Y LA ESPINACA.',
+          'SALTEAR LAS VERDURAS Y AÑADIR LAS CLARAS LIGERAMENTE BATIDAS.',
+          'REVOLVER HASTA QUE ESTÉN COCIDAS Y SERVIR JUNTO AL PAN Y LA PALTA.',
+          'PREPARAR EL MATE EN AGUA CALIENTE Y ACOMPAÑAR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1525351484163-7529414342d8?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'card-025',
+        code: 'CEN-005',
+        disease: 'Cardíacas',
+        name: 'ENSALADA MIXTA COCIDA CON POLLO',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '3.88 Bs',
+        kcal: 280.57,
+        protein: 14.37,
+        lipids: 9.03,
+        carbs: 35.3,
+        ingredients: [
+          { item: 'POLLO PECHUGA', qty: '50 g', cost: '1.46' },
+          { item: 'ESPINACA', qty: '20 g', cost: '0.30' },
+          { item: 'PIMENTÓN ROJO', qty: '20 g', cost: '0.29' },
+          { item: 'CEBOLLA BLANCA', qty: '20 g', cost: '0.28' },
+          { item: 'ZAPALLITO', qty: '35 g', cost: '0.20' },
+          { item: 'PAPA SANI YMILLA', qty: '150 g', cost: '1.17' },
+          { item: 'ACEITE DE OLIVA', qty: '3 g', cost: '0.18' }
+        ],
+        utensils: 'OLLA PEQUEÑA, BALANZA, RECIPIENTE, CUCHARA, TENEDOR, CUCHILLO Y TABLA.',
+        steps: [
+          'COCER LA PECHUGA DE POLLO Y LA PAPA SANI YMILLA, Y COCER LAS VERDURAS: ESPINACA, PIMENTÓN ROJO, CEBOLLA BLANCA Y ZAPALLITO.',
+          'PICAR EN CUBOS PEQUEÑOS LAS VERDURAS Y LA PAPA COCIDAS, Y DESMENUZAR FINAMENTE EL POLLO COCIDO.',
+          'MEZCLAR TODO EN UN RECIPIENTE CON EL ACEITE DE OLIVA HASTA INTEGRAR.',
+          'EMPLATAR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80'
+      },
+      // =====================================================================
+      // 25 RECETAS ESTANDARIZADAS PARA ENFERMEDADES RESPIRATORIAS
+      // =====================================================================
+      {
+        id: 'resp-001',
+        code: 'DES-001',
+        disease: 'Respiratorias',
+        name: 'PANQUEQUE DE CAÑAHUA CON YOGURT',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '15 MINUTOS',
+        totalCost: '5.37 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 12.44,
+        carbs: 28,
+        ingredients: [
+          { item: 'HOJUELAS DE CAÑAHUA', qty: '20 g', cost: '0.56' },
+          { item: 'YOGURT NATURAL', qty: '50 g', cost: '1.50' },
+          { item: 'MIEL DE ABEJA', qty: '5 g', cost: '0.43' },
+          { item: 'FRUTILLA', qty: '15 g', cost: '0.41' },
+          { item: 'HUEVO ENTERO DE GALLINA', qty: '60 g', cost: '1.07' },
+          { item: 'ALMENDRA', qty: '10 g', cost: '1.41' }
+        ],
+        utensils: 'SARTÉN ANTIADHERENTE PEQUEÑA, RECIPIENTE HONDO, BALANZA, BATIDOR MANUAL, ESPÁTULA, PLATO PLANO, CUCHARA Y TENEDOR.',
+        steps: [
+          'PESAR Y ALISTAR TODOS LOS INGREDIENTES Y ADJUNTAR TODO EN UN RECIPIENTE HONDO.',
+          'BATIR SUAVEMENTE LAS CLARAS CON TENEDOR HASTA LOGRAR UNA CONSISTENCIA HOMOGÉNEA SIN FORMAR ESPUMA EXCESIVA, EVITANDO AÑADIR SAL.',
+          'LLEVAR UNA SARTÉN ANTIADHERENTE A FUEGO BAJO, INCORPORAR LA MITAD DEL ACEITE DE OLIVA (2,5 G) Y DISTRIBUIR UNIFORMEMENTE POR TODA LA SUPERFICIE.',
+          'VERTER LA MEZCLA Y REMOVER LENTAMENTE CON LA ESPÁTULA DESDE LOS BORDES HACIA EL CENTRO DURANTE MEDIO MINUTO HASTA QUE TOME UN COLOR CAFECITO.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-002',
+        code: 'MER.M-001',
+        disease: 'Respiratorias',
+        name: 'SANWICH DE PALTA CON HUEVO REVUELTO ACOMPAÑADO DE INFUSION',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '8 MINUTOS',
+        totalCost: '2.91 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 9,
+        carbs: 21,
+        ingredients: [
+          { item: 'PALTA VARIEDAD', qty: '30 g', cost: '0.62' },
+          { item: 'TOMATE OVALADO MADURO', qty: '15 g', cost: '0.04' },
+          { item: 'PAN INTEGRAL', qty: '50 g', cost: '0.77' },
+          { item: 'TE DE INFUSION', qty: '170 ml', cost: '0.70' },
+          { item: 'MIEL DE ABEJA', qty: '5 g', cost: '0.50' },
+          { item: 'CLARA DE HUEVO', qty: '55 g', cost: '0.98' }
+        ],
+        utensils: 'TABLA DE PICAR, CUCHILLO DE MESA/COCINA, TAZA, SARTÉN ANTIADHERENTE, PLATO PLANO, CUCHARILLA.',
+        steps: [
+          'LAVAR EL TOMATE OVALADO MADURO, RETIRAR EL PEDÚNCULO Y CORTARLO EN CUADRADOS FINOS.',
+          'COLOCAR LAS CLARAS DE HUEVO EN UN BOL PEQUEÑO Y BATIR LIGERAMENTE DURANTE UNOS SEGUNDOS HASTA INTEGRAR BIEN.',
+          'CALENTAR UNA SARTÉN ANTIADHERENTE A FUEGO SUAVE, LUEGO VERTER LAS CLARAS REVOLVIENDOLAS.',
+          'COCINAR DURANTE 1 A 2 MINUTOS POR LADO HASTA QUE ESTÉ FIRME Y SUAVE.',
+          'EN UN PLATO PELAR Y APLASTAR LA PALTA HASTA FORMAR UNA PASTA SUAVE.',
+          'COLOCAR UNA REBANADA DE PAN INTEGRAL, DISTRIBUIR SOBRE ELLA LA MEZCLA DE TOMATE Y EL REVUELTO DE HUEVO POR ENCIMA Y CUBRIR CON LA SEGUNDA REBANADA DE PAN.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1525351484163-7529414342d8?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-003',
+        code: 'ALM-001',
+        disease: 'Respiratorias',
+        name: 'POLLO AL SARTEN CON ARROZ INTEGRAL PRIMAVERA',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '35-40 MINUTOS',
+        totalCost: '5.27 Bs',
+        kcal: 420,
+        protein: 21,
+        lipids: 14,
+        carbs: 52.2,
+        ingredients: [
+          { item: 'PIERNA DE POLLO', qty: '85 g', cost: '4.25' },
+          { item: 'ACEITE DE GIRASOL', qty: '8 g', cost: '0.24' },
+          { item: 'ZANAHORIA COCIDA', qty: '8 g', cost: '0.03' },
+          { item: 'CEBOLLA VERDE', qty: '1 g', cost: '0.01' },
+          { item: 'AJO', qty: '1 g', cost: '0.03' },
+          { item: 'ARVEJA', qty: '3 g', cost: '0.05' },
+          { item: 'COLIFLOR', qty: '3 g', cost: '0.02' },
+          { item: 'ARROZ INTEGRAL', qty: '45 g', cost: '0.54' }
+        ],
+        utensils: 'OLLA PEQUEÑA, SARTÉN O WOK PEQUEÑO, CUCHILLO, TABLA DE PICAR, CUCHARA DE MADERA, PLATO HONDO, COLADOR DE MALLA FINA.',
+        steps: [
+          'LAVAR EL ARROZ INTEGRAL Y PONER EN COCCION EN ABUNDANTE AGUA HASTA QUE ESTE TIERNO.',
+          'CALENTAR UNA PARTE DEL ACEITE DE GIRASOL EN LA SARTEN Y DORAR LA PIERNA A FUEGO MEDIO HASTA QUE ESTE BIEN COCIDA POR DENTRO Y DORADA POR FUERA. RETIRAR Y RESERVAR.',
+          'EN LA MISMA SARTEN AÑADIMOS EL RESTO DE ACEITE SI ES NECESARIO PARA SOFREIR EL AJO Y LA CEBOLLA.',
+          'AGREGAR EL ARROZ INTEGRAL COCIDO, LA ZANAHORIA, LAS ARVEJAS Y LA COLIFLOR PARA SALTEAR UN POCO Y TODO QUEDE UNIFORME.',
+          'EMPLATAR EL ARROZ PRIMAVERA Y LA PIERNA DE POLLO AL SARTEN.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-004',
+        code: 'MER.V-001',
+        disease: 'Respiratorias',
+        name: 'PAPAYA PICADA CON YOGURT Y FRUTOS SECOS',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '3.70 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 9,
+        carbs: 21,
+        ingredients: [
+          { item: 'YOGURT NATURAL', qty: '66 g', cost: '1.18' },
+          { item: 'PAPAYA', qty: '40 g', cost: '0.44' },
+          { item: 'MANI TOSTADO', qty: '8 g', cost: '0.18' },
+          { item: 'ALMENDRA', qty: '5 g', cost: '1.16' },
+          { item: 'LECHE EN POLVO DESCREMADA', qty: '12 g', cost: '0.74' }
+        ],
+        utensils: 'CUCHILLO DE MESA, CUCHARA, TABLA PEQUEÑA, COPA O BOL DE POSTRE.',
+        steps: [
+          'PELAR LA PAPAYA, RETIRAR LAS SEMILLAS Y CORTAR EN CUADRADITOS.',
+          'CORTAR GROSERAMENTE EL MANI TOSTADO Y LAS ALMENDRAS.',
+          'MEZCLAR EL YOGURT NATURAL CON LA LECHE EN POLVO DESCREMADA HASTA LOGRAR TENER UNA MEZCLA UNIFORME Y CREMOSA.',
+          'INCORPORAR LOS CUBOS DE PAPAYA, EL MANI TOSTADO Y LAS ALMENDRAS PARA MANTENER LA TEXTURA CRUJIENTE.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-005',
+        code: 'CEN-001',
+        disease: 'Respiratorias',
+        name: 'PURE DE ZAPALLO Y ZANAHORIA CON CUBITOS DE HUEVO DURO',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '4.58 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 12.44,
+        carbs: 28,
+        ingredients: [
+          { item: 'CARNE MAGRA', qty: '43 g', cost: '2.97' },
+          { item: 'ACEITE VEGETAL', qty: '10 g', cost: '0.17' },
+          { item: 'PAPA SIN CASCARA', qty: '70 g', cost: '0.55' },
+          { item: 'ZAPALLO', qty: '40 g', cost: '0.23' },
+          { item: 'ZANAHORIA', qty: '10 g', cost: '0.04' },
+          { item: 'PEREJIL', qty: '3 g', cost: '0.01' },
+          { item: 'CLARA DE HUEVO', qty: '35 g', cost: '0.62' }
+        ],
+        utensils: 'OLLA PEQUEÑA, PROCESADOR, TABLA DE PICAR, CUCHILLO, SARTÉN ANTIADHERENTE, CUCHARA DE MADERA, PLATO.',
+        steps: [
+          'PELAR Y CORTAR EN TROZOS LA PAPA, EL ZAPALLO Y LA ZANAHORIA. COCINARLOS HASTA QUE TENGAN UNA CONSISTENCIA BLANDA, ESCURRIR Y HACER EL PURE SUAVE.',
+          'COCINAR LA CARNE MAGRA SALTEADA HASTA QUE ESTE COCIDA Y DESMENUZAR.',
+          'PONER A COCER EL HUEVO DURO PARA POSTERIORMENTE CORTAR EN CUBOS PEQUEÑOS PARA PONERLO DE DECORACION AL FINAL.',
+          'EMPLATAR EL PURE JUNTO CON LA CARNE DESMENUZADA Y EL HUEVO EN CUBOS.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-006',
+        code: 'DES-002',
+        disease: 'Respiratorias',
+        name: 'TORTILLA DE QUINUA CON HUEVO REVUELTO',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '15 MINUTOS',
+        totalCost: '3.75 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 12.44,
+        carbs: 28,
+        ingredients: [
+          { item: 'QUINUA', qty: '30 g', cost: '1.44' },
+          { item: 'HUEVO ENTERO', qty: '65 g', cost: '1.16' },
+          { item: 'MIEL DE ABEJA', qty: '5 g', cost: '0.50' },
+          { item: 'TOMATE REDONDO', qty: '25 g', cost: '0.06' },
+          { item: 'TE DE INFUSION', qty: '170 ml', cost: '0.60' },
+          { item: 'ACEITE VEGETAL', qty: '5 g', cost: '0.09' }
+        ],
+        utensils: 'SARTÉN ANTIADHERENTE PEQUEÑA, RECIPIENTE HONDO, BALANZA, BATIDOR MANUAL, ESPÁTULA, PLATO, CUCHARA.',
+        steps: [
+          'LAVAR MUY BIEN LA QUINUA FROTÁNDOLA BAJO AGUA CORRIENTE PARA RETIRAR LA SAPONINA; ESCURRIR Y DEJARLA COCER EN AGUA HASTA QUE ESTÉ TIERNA Y HAYA ABSORBIDO EL LÍQUIDO. DEJAR ENTIBIAR.',
+          'LAVAR EL TOMATE REDONDO Y PICAR EN CUBITOS PEQUEÑOS.',
+          'EN UN RECIPIENTE, BATIR EL HUEVO ENTERO. AGREGAR LA QUINUA COCIDA Y EL TOMATE PICADO, MEZCLANDO SUAVEMENTE.',
+          'CALENTAR LA PORCIÓN DE ACEITE VEGETAL EN UNA SARTÉN A FUEGO MEDIO. VERTER LA MEZCLA E IR REMOVIENDO SUAVEMENTE PARA FORMAR UN REVUELTO.',
+          'PREPARAR LA INFUSIÓN DE TÉ CALIENTE. SERVIR LA PREPARACIÓN JUNTO CON EL TÉ Y TENER LISTA LA MIEL DE ABEJA.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-007',
+        code: 'MER.M-002',
+        disease: 'Respiratorias',
+        name: 'CRUMBLE DE FRUTILLAS CON AMARANTO',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '15 MINUTOS',
+        totalCost: '4.09 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 9,
+        carbs: 21,
+        ingredients: [
+          { item: 'FRUTILLA', qty: '30 g', cost: '0.41' },
+          { item: 'ZUMO DE NARANJA', qty: '15 ml', cost: '0.12' },
+          { item: 'MIEL DE ABEJA', qty: '5 g', cost: '0.20' },
+          { item: 'YOGURT', qty: '50 g', cost: '1.52' },
+          { item: 'ACEITE DE COCO', qty: '5 g', cost: '0.36' },
+          { item: 'AMARANTO', qty: '15 g', cost: '0.12' },
+          { item: 'LECHE EN POLVO DESCREMADA', qty: '25 g', cost: '1.36' }
+        ],
+        utensils: 'TABLA DE PICAR, CUCHILLO DE MESA/COCINA, TAZA, SARTÉN ANTIADHERENTE, PLATO PLANO, CUCHARILLA.',
+        steps: [
+          'LAVAR LAS FRUTILLAS Y CORTARLAS EN TROZOS PEQUEÑOS, Y EXPRIMIR EL ZUMO DE NARANJA.',
+          'EN UN RECIPIENTE PEQUEÑO MEZCLAR LAS FRUTILLAS CON EL ZUMO DE NARANJA Y LA MIEL DE ABEJA.',
+          'MEZCLAR EL YOGURT CON LA LECHE EN POLVO DESCREMADA HASTA INTEGRAR BIEN SIN GRUMOS.',
+          'FINALMENTE VERTER LA PREPARACION EN UN RECIPIENTE JUNTO CON EL AMARANTO Y EL ACEITE DE COCO.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-008',
+        code: 'ALM-002',
+        disease: 'Respiratorias',
+        name: 'FILETE DE RES AL HORNO CON VERDURAS AL VAPOR CON PURE DE PAPA',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '35-40 MINUTOS',
+        totalCost: '6.39 Bs',
+        kcal: 420,
+        protein: 21,
+        lipids: 14,
+        carbs: 52.2,
+        ingredients: [
+          { item: 'ACEITE DE GIRASOL', qty: '12 g', cost: '0.20' },
+          { item: 'ZANAHORIA COCIDA', qty: '15 g', cost: '0.06' },
+          { item: 'PAPA IMILLA', qty: '47 g', cost: '0.37' },
+          { item: 'AJO', qty: '1 g', cost: '0.03' },
+          { item: 'ARVEJA', qty: '10 g', cost: '0.15' },
+          { item: 'COLIFLOR', qty: '8 g', cost: '0.06' },
+          { item: 'ZUMO DE NARANJA', qty: '8 ml', cost: '0.09' },
+          { item: 'CARNE MAGRA', qty: '90 g', cost: '5.21' },
+          { item: 'LECHE DE VACA', qty: '20 ml', cost: '0.16' },
+          { item: 'VAINITAS', qty: '5 g', cost: '0.06' }
+        ],
+        utensils: 'OLLA PEQUEÑA, CUCHILLO, BANDEJA DE HORNO, TABLA DE PICAR, CUCHARA DE MADERA, PLATO, EXPRIMIDOR, HORNO.',
+        steps: [
+          'PELAR Y CORTAR LA PAPA IMILLA Y COCERLA HASTA QUE ESTE BLANDA, ESCURRIR, APLASTAR Y MEZCLAR CON LA LECHE FLUIDA DE VACA Y UN POCO DE ACEITE HASTA FORMAR UN PURE SUAVE.',
+          'PREPARAR LAS VERDURAS AL VAPOR (ZANAHORIA, ARVEJA, COLIFLOR Y VAINITAS PICADAS) HASTA QUE ESTEN COCIDAS.',
+          'MARINAR LIGERAMENTE EL FILETE DE CARNE MAGRA CON EL ZUMO DE NARANJA, AJO PICADO Y PARTE DEL ACEITE DE GIRASOL. LLEVARLO AL HORNO HASTA LOGRAR EL PUNTO DE COCCION DESEADO MANTENIENDO SU JUGOSIDAD.',
+          'SERVIR EL FILETE DE RES ACOMPAÑADO DE PURE DE PAPA Y LAS VERDURAS AL VAPOR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-009',
+        code: 'MER.V-002',
+        disease: 'Respiratorias',
+        name: 'CREPAS DE ESPINACA CON QUESO Y PALTA',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '2.98 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 9,
+        carbs: 21,
+        ingredients: [
+          { item: 'ESPINACAS', qty: '15 g', cost: '0.23' },
+          { item: 'LECHE FLUIDA', qty: '5 ml', cost: '0.04' },
+          { item: 'HUEVO', qty: '30 g', cost: '0.53' },
+          { item: 'QUESO DE MESA', qty: '15 g', cost: '0.24' },
+          { item: 'TOMATE', qty: '15 g', cost: '0.04' },
+          { item: 'AVENA', qty: '20 g', cost: '1.81' },
+          { item: 'ACEITE VEGETAL', qty: '5 g', cost: '0.09' }
+        ],
+        utensils: 'CUCHILLO DE MESA, LICUADORA, LAVADOR, TABLA PEQUEÑA, PLATO, SARTEN ANTIADHERENTE.',
+        steps: [
+          'LAVAR MUY BIEN LAS ESPINACAS PARA LUEGO LICUARLA JUNTO CON LA LECHE FLUIDA, EL HUEVO Y LA AVENA HASTA OBTENER UNA MEZCLA LIQUIDA PARA CREPA.',
+          'CALENTAR UNA SARTEN CON UNA MINIMA CANTIDAD DE ACEITE VEGETAL Y VERTER UNA CAPA FINA DE LA MEZCLA PARA COCINARLAS POR AMBOS LADOS.',
+          'RELLENAR LA CREPA CON EL QUESO DE MESA (RALLADO) Y EL TOMATE PICADO; DOBLAR Y CALENTAR BREVEMENTE SOBRE LA SARTEN HASTA QUE EL QUESO SE SUAVICE.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-010',
+        code: 'CEN-002',
+        disease: 'Respiratorias',
+        name: 'SOPA DE POLLO CON ARROZ BATIDO Y VERDURAS',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '4.36 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 12.44,
+        carbs: 28,
+        ingredients: [
+          { item: 'PECHUGA DE POLLO', qty: '60 g', cost: '3.75' },
+          { item: 'ZANAHORIA', qty: '8 g', cost: '0.03' },
+          { item: 'CEBOLLA MORADA', qty: '3 g', cost: '0.01' },
+          { item: 'PEREJIL', qty: '3 g', cost: '0.01' },
+          { item: 'BROCOLI', qty: '12 g', cost: '0.10' },
+          { item: 'TALLO DE APIO', qty: '5 g', cost: '0.02' },
+          { item: 'ARROZ', qty: '27 g', cost: '0.32' },
+          { item: 'ARVEJA FRESCA', qty: '5 g', cost: '0.08' },
+          { item: 'ACEITE VEGETAL', qty: '4 g', cost: '0.07' }
+        ],
+        utensils: 'OLLA PEQUEÑA, TABLA DE PICAR, CUCHILLO, SARTÉN ANTIADHERENTE, PLATO, CUCHARON HONDO.',
+        steps: [
+          'LAVAR Y CORTAR LA PECHUGA DE POLLO EN TROZOS PEQUEÑOS. PICA LA ZANAHORIA, LA CEBOLLA MORADA Y EL APIO EN TALLO.',
+          'EN UNA OLLA, CALENTAR EL ACEITE VEGETAL Y SOFREIR SUAVEMENTE LA CEBOLLA MORADA, EL APIO Y LA ZANAHORIA.',
+          'AGREGAR LA PECHUGA DE POLLO Y EL AGUA NECESARIA PARA LA SOPA, COCINAR HASTA QUE EL POLLO ESTE LISTO.',
+          'INCORPORAR EL ARROZ INTEGRAL Y LAS ARVEJAS FRESCAS, COCINARLOS HASTA QUE EL ARROZ ESTE BIEN COCIDO Y SUAVE.',
+          'AÑADIR EL BROCOLI EN LOS ULTIMOS MINUTOS PARA QUE CONSERVE COLOR Y TEXTURA.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-011',
+        code: 'DES-003',
+        disease: 'Respiratorias',
+        name: 'BATIDO DE DURAZNO, FRUTILLA CON LECHE Y AVENA',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '10 MINUTOS',
+        totalCost: '4.53 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 12.44,
+        carbs: 28,
+        ingredients: [
+          { item: 'LECHE', qty: '200 ml', cost: '1.40' },
+          { item: 'DURAZNO', qty: '50 g', cost: '0.38' },
+          { item: 'FRUTILLA', qty: '20 g', cost: '0.35' },
+          { item: 'ALMENDRA', qty: '13 g', cost: '2.01' },
+          { item: 'ACEITE VEGETAL', qty: '12 g', cost: '0.39' }
+        ],
+        utensils: 'BALANZA, CUCHARAS, LICUADORA, VASOS.',
+        steps: [
+          'LAVAR CUIDADOSAMENTE LAS FRUTILLAS Y EL DURAZNO. POSTERIORMENTE PELAR EL DURAZNO, RETIRAR EL CAROZO PARA CORTAR DURAZNOS Y FRUTILLAS.',
+          'COLOCAR EN LA LICUADORA LA LECHE, EL DURAZNO Y LAS FRUTILLAS (JUNTO CON LA ALMENDRA Y EL ACEITE VEGETAL).',
+          'LICUAR A VELOCIDAD MEDIA-ALTA HASTA LOGRAR UNA TEXTURA HOMOGENIZADA.',
+          'SERVIR EN VASOS.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-012',
+        code: 'MER.M-003',
+        disease: 'Respiratorias',
+        name: 'AVENA DE ZANAHORIA',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '15 MINUTOS',
+        totalCost: '3.50 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 9,
+        carbs: 21,
+        ingredients: [
+          { item: 'ZANAHORIA COCIDA', qty: '20 g', cost: '0.08' },
+          { item: 'LECHE DE VACA', qty: '40 ml', cost: '0.32' },
+          { item: 'ALMENDRA', qty: '10 g', cost: '1.81' },
+          { item: 'AVENA', qty: '14 g', cost: '0.57' },
+          { item: 'LECHE DESCREMADA', qty: '15 g', cost: '0.23' },
+          { item: 'NUEZ', qty: '2 g', cost: '0.58' }
+        ],
+        utensils: 'VASO, CUCHARA, BALANZA.',
+        steps: [
+          'PICAR O TRITURAR LA ZANAHORIA COCIDA. PICAR LAS ALMENDRAS Y LA NUEZ.',
+          'EN UNA OLLA PEQUEÑA A FUEGO MEDIO, COLOCAR LA LECHE DE VACA JUNTO CON LA LECHE DESCREMADA DISUELTA Y LA AVENA. COCINAR REMOVIENDO CONSTANTEMENTE HASTA QUE ESPESE Y ESTE COCIDA.',
+          'INCORPORAR LA ZANAHORIA COCIDA Y MEZCLAR BIEN POR 1-2 MINUTOS MAS PARA INTEGRAR MAS SABORES.',
+          'SERVIR EN UN BOWL Y DECORAR POR ENCIMA CON LAS ALMENDRAS Y LA NUEZ PICADAS.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-013',
+        code: 'ALM-003',
+        disease: 'Respiratorias',
+        name: 'ENRROLLADO DE PECHUGA DE POLLO CON ENSALADA DE PEPINO',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '35-40 MINUTOS',
+        totalCost: '5.44 Bs',
+        kcal: 420,
+        protein: 21,
+        lipids: 14,
+        carbs: 52.2,
+        ingredients: [
+          { item: 'ACEITE DE GIRASOL', qty: '10 g', cost: '0.17' },
+          { item: 'ARROZ INTEGRAL', qty: '43 g', cost: '0.52' },
+          { item: 'PEREJIL', qty: '3 g', cost: '0.02' },
+          { item: 'PIMENTON VERDE', qty: '8 g', cost: '0.11' },
+          { item: 'TOMATE OVALADO', qty: '20 g', cost: '0.05' },
+          { item: 'AJO', qty: '2 g', cost: '0.07' },
+          { item: 'CEBOLLA MORADA', qty: '5 g', cost: '0.02' },
+          { item: 'ZANAHORIA CRUDA', qty: '5 g', cost: '0.02' },
+          { item: 'PEPINO', qty: '20 g', cost: '0.14' },
+          { item: 'PECHUGA DE POLLO', qty: '80 g', cost: '4.34' }
+        ],
+        utensils: 'BANDEJA DE HORNO, CUCHARA, CUCHILLO, TABLA DE PICAR, CUCHARA DE MADERA, PLATO, RALLADORA.',
+        steps: [
+          'COCINAR HASTA QUE EL ARROZ INTEGRAL ESTE LISTO.',
+          'LAMINAR LA PECHUGA DE POLLO PARA PODER ENRROLLARLA Y SAZONARLA CON AJO PICADO, PEREJIL, PIMENTON VERDE FINAMENTE PICADO.',
+          'SUJETAR CON UN HILO CULINARIO Y PONERLA AL HORNO POR DURANTE 30 MINUTOS.',
+          'LAVAR Y CORTAR EL PEPINO, EL TOMATE OVALADO, LA CEBOLLA MORADA.',
+          'MEZCLAR LAS VERDURAS PARA LA ENSALADA AÑADIENDO EL ACEITE RESTANTE.',
+          'SERVIR EL ENRROLLADO DE PECHUGA DE POLLO JUNTO A LA ENSALADA Y EL ARROZ INTEGRAL.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-014',
+        code: 'MER.V-003',
+        disease: 'Respiratorias',
+        name: 'QUEQUE DE AMARANTO CON MANZANA Y PULPA DE TUMBO',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '3.41 Bs',
+        kcal: 210,
+        protein: 10.5,
+        lipids: 9,
+        carbs: 21,
+        ingredients: [
+          { item: 'YOGURT NATURAL', qty: '70 g', cost: '1.31' },
+          { item: 'MANZANA SIN CASCARA', qty: '30 g', cost: '0.60' },
+          { item: 'TUMBO', qty: '10 g', cost: '0.13' },
+          { item: 'ACEITE DE GIRASOL', qty: '6 g', cost: '0.10' },
+          { item: 'CLARA DE HUEVO', qty: '55 g', cost: '0.98' },
+          { item: 'AMARANTO TOSTADO', qty: '10 g', cost: '0.29' }
+        ],
+        utensils: 'CUCHILLO DE MESA, CUCHARA, BATIDOR DE MANO, TABLA PEQUEÑA, COPA O BOWL, RALLADORA, HORNO.',
+        steps: [
+          'PELAR LA MANZANA, RETIRAR EL CENTRO Y RALLAR.',
+          'BATIR LIGERAMENTE LAS CLARAS DE HUEVO E INTEGRA JUNTO CON EL YOGURT, EL ACEITE Y LA PULPA DE TUMBO Y MANZANA.',
+          'INCORPORAR EL AMARANTO TOSTADO Y MEZCLAR BIEN.',
+          'VERTER LA PREPARACION EN UN MOLDE APTO PARA HORNO Y REVISAR QUE ESTE COCIDO; EMPLATAR UNA VEZ FRIO.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-015',
+        code: 'CEN-003',
+        disease: 'Respiratorias',
+        name: 'ENSALADA FRESCA DE QUINUA Y ATUN',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '6.41 Bs',
+        kcal: 280,
+        protein: 14,
+        lipids: 12.44,
+        carbs: 28,
+        ingredients: [
+          { item: 'ZANAHORIA COCIDA', qty: '5 g', cost: '0.02' },
+          { item: 'TOMATE OVALADO', qty: '12 g', cost: '0.03' },
+          { item: 'PEREJIL', qty: '3 g', cost: '0.02' },
+          { item: 'BROCOLI', qty: '10 g', cost: '0.09' },
+          { item: 'TALLO DE APIO', qty: '3 g', cost: '0.40' },
+          { item: 'QUINUA TOSTADA MOLIDA', qty: '25 g', cost: '0.95' },
+          { item: 'ARVEJA FRESCA', qty: '5 g', cost: '0.08' },
+          { item: 'PAPA SIN CASCARA', qty: '30 g', cost: '0.20' },
+          { item: 'ATUN AL AGUA', qty: '40 g', cost: '5.02' },
+          { item: 'ACEITE DE GIRASOL', qty: '3 g', cost: '0.05' }
+        ],
+        utensils: 'OLLA PEQUEÑA, BOWL, TABLA DE PICAR, CUCHILLO, SARTÉN ANTIADHERENTE, CUCHARA DE MADERA, PLATO.',
+        steps: [
+          'COCINAR LA PAPA SIN CASCARA HASTA QUE ESTE TIERNA Y CORTAR EN CUBOS.',
+          'ALISTAR LA ZANAHORIA COCIDA, BROCOLI COCIDO Y ARVEJAS COCIDAS.',
+          'PICAR EL TOMATE, EL TALLO DEL APIO Y EL PEREJIL.',
+          'EN UN BOWL MEZCLAR LOS INGREDIENTES (CON EL ATÚN, LA QUINUA TOSTADA MOLIDA Y EL ACEITE DE GIRASOL) TENIENDO CUIDADO DE NO DESHACER LOS MISMOS Y EMPLATAR.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-016',
+        code: 'DES-004',
+        disease: 'Respiratorias',
+        name: 'Avena cremosa con plátano y huevo revuelto',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '15 MINUTOS',
+        totalCost: '3,14 Bs',
+        kcal: 282.22,
+        protein: 14.88,
+        lipids: 11.26,
+        carbs: 30.32,
+        ingredients: [
+          { item: 'Avena laminada', qty: '20 g', cost: '0.81' },
+          { item: 'Aceite vegetal', qty: '3 g', cost: '0.05' },
+          { item: 'Plátano', qty: '40 g', cost: '0.48' },
+          { item: 'Huevo entero (granja)', qty: '50 g', cost: '0.84' },
+          { item: 'Leche fresca fluida', qty: '120 ml', cost: '0.96' }
+        ],
+        utensils: 'Olla pequeña, Sartén antiadherente, Cuchara de cocina, Batidor manual, Plato, Tazón.',
+        steps: [
+          'Cocinar la avena con la leche, removiendo hasta que espese.',
+          'Batir el huevo y cocinarlo con el aceite, revolviendo hasta que cuaje.',
+          'Servir la avena con el plátano en rodajas y acompañar con el huevo revuelto.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-017',
+        code: 'MER.M-004',
+        disease: 'Respiratorias',
+        name: 'Flan de amaranto y leche',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '30 MINUTOS',
+        totalCost: '2.41 Bs',
+        kcal: 199.35,
+        protein: 11.47,
+        lipids: 8.35,
+        carbs: 19.63,
+        ingredients: [
+          { item: 'Leche fresca fluida', qty: '90 ml', cost: '0.71' },
+          { item: 'Huevo entero de granja', qty: '45 g', cost: '0.75' },
+          { item: 'Amaranto', qty: '15 g', cost: '0.44' },
+          { item: 'Miel de abeja', qty: '5 g', cost: '0.50' }
+        ],
+        utensils: 'Olla pequeña, Recipiente para mezclar, Batidor manual, Licuadora o molinillo, Molde pequeño, Olla para baño María, Cuchara.',
+        steps: [
+          'Moler el amaranto hasta obtener una textura fina.',
+          'Mezclar la leche, el huevo, el amaranto y la miel hasta integrar bien.',
+          'Verter la preparación en un molde pequeño.',
+          'Cocinar a baño María hasta que el flan esté firme y dejar enfriar antes de servir.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-018',
+        code: 'ALM-004',
+        disease: 'Respiratorias',
+        name: 'PECHUGA DESMENUZADA CON PURÉ DE PAPA Y ZANAHORIA',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '35 MINUTOS',
+        totalCost: '4,40 Bs',
+        kcal: 403.99,
+        protein: 23.07,
+        lipids: 17.58,
+        carbs: 38.21,
+        ingredients: [
+          { item: 'POLLO PECHUGA', qty: '100 g', cost: '2,92' },
+          { item: 'PAPA SANI Y MILLA', qty: '140 g', cost: '1,09' },
+          { item: 'ZANAHORIA CRUDA', qty: '60 g', cost: '0,25' },
+          { item: 'PEREJIL', qty: '1 g', cost: '0.02' },
+          { item: 'ACEITE DE GIRASOL', qty: '6 g', cost: '0.10' },
+          { item: 'SAL', qty: '2 g', cost: '0.02' }
+        ],
+        utensils: 'OLLA PEQUEÑA, SARTÉN O WOK PEQUEÑO, CUCHILLO, TABLA DE PICAR, CUCHARA DE MADERA, PLATO, TENEDOR, BALANZA.',
+        steps: [
+          'LAVAR Y COCINAR LA PAPA Y LA ZANAHORIA HASTA QUE ESTÉN BLANDAS.',
+          'APLASTAR AMBAS VERDURAS JUNTAS HASTA FORMAR UN PURÉ SUAVE.',
+          'COCINAR LA PECHUGA DE POLLO Y DESMENUZARLA FINAMENTE.',
+          'SERVIR EL PURÉ EN UN LADO DEL PLATO Y COLOCAR EL POLLO DESMENUZADO A LADO.',
+          'AÑADIR UN CHORRITO DE ACEITE SOBRE EL PURÉ Y ESPOLVOREAR PEREJIL PICADO FINAMENTE.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-019',
+        code: 'MER.V-004',
+        disease: 'Respiratorias',
+        name: 'BATIDO SUAVE DE PAPAYA Y LECHE',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '2.72 Bs',
+        kcal: 210.96,
+        protein: 10.57,
+        lipids: 8.74,
+        carbs: 22.59,
+        ingredients: [
+          { item: 'CLARA DE HUEVO', qty: '15 g', cost: '0,24' },
+          { item: 'LECHE FRESCA FLUIDA', qty: '180 ml', cost: '1.44' },
+          { item: 'PAPAYA', qty: '45 g', cost: '0.50' },
+          { item: 'AVENA LAMINADA', qty: '12 g', cost: '0.49' },
+          { item: 'ACEITE DE OLIVA', qty: '3 g', cost: '0.05' }
+        ],
+        utensils: 'CUCHILLO DE MESA, LICUADORA, BALANZA, TABLA PEQUEÑA, VASO PARA SERVIR.',
+        steps: [
+          'LAVAR, PELAR Y CORTAR LA PAPAYA EN TROZOS PEQUEÑOS.',
+          'COLOCAR EN LA LICUADORA LA LECHE, LA PAPAYA, LA AVENA Y LOS DEMÁS INGREDIENTES.',
+          'LICUAR HASTA OBTENER UNA MEZCLA SUAVE Y HOMOGÉNEA.',
+          'SERVIR INMEDIATAMENTE.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-020',
+        code: 'CEN-004',
+        disease: 'Respiratorias',
+        name: 'CREMA DE ZAPALLO Y ZANAHORIA CON HUEVO POCHADO',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '3 Bs',
+        kcal: 279.35,
+        protein: 14.68,
+        lipids: 13.09,
+        carbs: 27.17,
+        ingredients: [
+          { item: 'Huevo entero granja', qty: '65 g', cost: '1,07' },
+          { item: 'Zapallo maduro', qty: '120 g', cost: '0,68' },
+          { item: 'Papa sani ymilla', qty: '90 g', cost: '0,70' },
+          { item: 'Leche fresca fluida', qty: '30 g', cost: '0,24' },
+          { item: 'Aceite de oliva', qty: '5 g', cost: '0,30' },
+          { item: 'Sal', qty: '2 gr', cost: '0,02' }
+        ],
+        utensils: 'Olla mediana, Licuadora o mixer, Balanza, Tazón, Cuchara, Cuchillo y Tabla.',
+        steps: [
+          'PELAR Y CORTAR EN CUBOS EL ZAPALLO Y LA PAPA; COCINARLOS EN UNA OLLA CON AGUA Y UNA PIZCA DE SAL HASTA QUE ESTÉN COMPLETAMENTE SUAVES.',
+          'EN OLLA APARTE, HERVIR EL HUEVO ENTERO DURANTE 10 MINUTOS HASTA QUE QUEDE DURO, ENFRIAR, PELAR Y PICAR EN CUBOS PEQUEÑOS.',
+          'ESCURRIR LA PAPA Y EL ZAPALLO, LICUARLOS O PROCESARLOS CALIENTES JUNTO CON LA LECHE FRESCA FLUIDA (30 G) Y EL ACEITE DE OLIVA (5 G) HASTA OBTENER UNA CREMA ESPESA Y HOMOGÉNEA.',
+          'SERVIR LA CREMA DE ZAPALLO EN UN PLATO HONDO Y DISTRIBUIR EL HUEVO PICADO ENCIMA.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-021',
+        code: 'DES-005',
+        disease: 'Respiratorias',
+        name: 'Quinua con manzana y leche',
+        meal: 'Desayuno',
+        servings: 1,
+        prepTime: '15 MINUTOS',
+        totalCost: '3.94 BS',
+        kcal: 276.99,
+        protein: 13.31,
+        lipids: 11.39,
+        carbs: 30.30,
+        ingredients: [
+          { item: 'Leche fresca fluida', qty: '130 g', cost: '1.04' },
+          { item: 'Clara de huevo de granja', qty: '45 g', cost: '0.80' },
+          { item: 'Aceite vegetal', qty: '6 g', cost: '0.10' },
+          { item: 'Manzana sin cáscara', qty: '40 g', cost: '0.80' },
+          { item: 'Quinua', qty: '25 g', cost: '1.20' }
+        ],
+        utensils: 'Licuadora, Olla pequeña, Sartén antiadherente, Cuchara, Cuchillo, Tabla de picar, Vaso, Plato.',
+        steps: [
+          'Cocinar la quinua hasta que esté suave y dejar enfriar.',
+          'Licuar la quinua con la leche y la manzana hasta obtener una mezcla homogénea.',
+          'Batir las claras y cocinarlas en una sartén con el aceite hasta que estén completamente cuajadas.',
+          'Servir el licuado acompañado de las claras de huevo.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1495214783159-3503fd1b572d?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-022',
+        code: 'MER.M-005',
+        disease: 'Respiratorias',
+        name: 'YOGURT GRIEGO ENRIQUECIDO CON FRUTILLA Y CHÍA',
+        meal: 'Media Mañana',
+        servings: 1,
+        prepTime: '10 MINUTOS',
+        totalCost: '4.05 BS',
+        kcal: 205.95,
+        protein: 10.17,
+        lipids: 8.24,
+        carbs: 22.71,
+        ingredients: [
+          { item: 'FRUTILLA', qty: '40 g', cost: '1.10' },
+          { item: 'SEMILLAS DE CHÍA', qty: '2 g', cost: '0.21' },
+          { item: 'NUEZ', qty: '1 g', cost: '0.10' },
+          { item: 'YOGURT GRIEGO', qty: '180 g', cost: '2.59' },
+          { item: 'AZUCAR MORENA', qty: '5 g', cost: '0.05' }
+        ],
+        utensils: 'TAZÓN O RECIPIENTE, CUCHARA, TENEDOR, CUCHILLO, TABLA DE PICAR, MORTERO O MOLINILLO PARA LA NUEZ.',
+        steps: [
+          'REMOJAR PREVIAMENTE LAS SEMILLAS DE CHÍA.',
+          'APLASTAR LAS FRUTILLAS CON UN TENEDOR Y MEZCLARLAS CON EL YOGUR GRIEGO.',
+          'INCORPORAR LAS SEMILLAS DE CHÍA REMOJADAS Y EL AZÚCAR MORENA.',
+          'SERVIR Y ESPOLVOREAR POR ENCIMA LA NUEZ MOLIDA.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-023',
+        code: 'ALM-005',
+        disease: 'Respiratorias',
+        name: 'GUISO SUAVE DE POLLO CON ARROZ Y CALABACÍN',
+        meal: 'Almuerzo',
+        servings: 1,
+        prepTime: '30 MINUTOS',
+        totalCost: '4.26 BS',
+        kcal: 416.22,
+        protein: 22.29,
+        lipids: 17.76,
+        carbs: 41.64,
+        ingredients: [
+          { item: 'QUESO DE MESA', qty: '8 g', cost: '0.13' },
+          { item: 'CALABACÍN', qty: '80 g', cost: '0.89' },
+          { item: 'POLLO PECHUGA', qty: '90 g', cost: '2.63' },
+          { item: 'ARROZ CORRIENTE', qty: '30 g', cost: '0.33' },
+          { item: 'ACEITE DE OLIVA', qty: '6 g', cost: '0.10' },
+          { item: 'ZANAHORIA', qty: '40 g', cost: '0.17' },
+          { item: 'SAL', qty: '2 g', cost: '0.02' }
+        ],
+        utensils: 'OLLA PEQUEÑA, CUCHILLO, TENEDOR, TABLA DE PICAR, CUCHARA DE COCINA, PLATO HONDO, BALANZA.',
+        steps: [
+          'LAVAR Y PICAR EL CALABACÍN Y LA ZANAHORIA EN TROZOS PEQUEÑOS.',
+          'COCINAR EL POLLO EN AGUA HASTA QUE ESTÉ TIERNO Y DESMENUZARLO.',
+          'AÑADIR EL ARROZ Y LAS VERDURAS AL CALDO, COCINAR HASTA QUE TODO ESTÉ MUY SUAVE.',
+          'INCORPORAR EL POLLO DESMENUZADO, EL ACEITE Y LA SAL; DEJAR HERVIR UNOS MINUTOS.',
+          'AGREGAR EL QUESO DE MESA Y MEZCLAR HASTA QUE SE INTEGRE; SERVIR COMO GUISO HÚMEDO, DE CONSISTENCIA SUAVE.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-024',
+        code: 'MER.V-005',
+        disease: 'Respiratorias',
+        name: 'TÉ VERDE CON PAN QUESO Y PALTA',
+        meal: 'Media Tarde',
+        servings: 1,
+        prepTime: '5 MINUTOS',
+        totalCost: '1.89 BS',
+        kcal: 217.70,
+        protein: 9.77,
+        lipids: 9.89,
+        carbs: 22.23,
+        ingredients: [
+          { item: 'MIEL DE ABEJA', qty: '2 g', cost: '1.31' },
+          { item: 'TÉ VERDE INFUSIÓN', qty: '2 g', cost: '0.60' },
+          { item: 'PALTA', qty: '20 g', cost: '0.13' },
+          { item: 'QUESILLO', qty: '28 g', cost: '0.10' },
+          { item: 'PAN DE MOLDE SIN CORTEZA', qty: '35 g', cost: '0.98' }
+        ],
+        utensils: 'TAZA, PLATO, CUCHILLO, RALLADOR (OPCIONAL), CUCHARILLA.',
+        steps: [
+          'PREPARAR EL TÉ VERDE EN AGUA CALIENTE Y ENDULZAR CON MIEL.',
+          'RETIRAR LA CORTEZA DEL PAN Y COLOCAR ENCIMA EL QUESILLO DESMENUZADO O RALLADO.',
+          'CORTAR LA PALTA EN GAJOS Y SERVIR JUNTO AL PAN Y EL TÉ.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'resp-025',
+        code: 'CEN-005',
+        disease: 'Respiratorias',
+        name: 'Sopa de semola con pollo y espinaca',
+        meal: 'Cena',
+        servings: 1,
+        prepTime: '25 MINUTOS',
+        totalCost: '2.34 BS',
+        kcal: 284.48,
+        protein: 13.30,
+        lipids: 12.14,
+        carbs: 30.42,
+        ingredients: [
+          { item: 'Pechuga de Pollo', qty: '50 g', cost: '1.46' },
+          { item: 'Aceite de oliva', qty: '6 g', cost: '0.10' },
+          { item: 'Espinaca', qty: '8 g', cost: '0.12' },
+          { item: 'Papa sani ymilla', qty: '35 g', cost: '0.27' },
+          { item: 'Semola', qty: '25 g', cost: '0.38' },
+          { item: 'Sal', qty: '2 g', cost: '0.02' }
+        ],
+        utensils: 'Olla pequeña, Balanza, Cuchara, Cuchillo, Tabla.',
+        steps: [
+          'CORTAR LA PECHUGA DE POLLO Y LA PAPA SANI YMILLLA EN CUBOS PEQUEÑOS, Y LAVAR Y PICAR LA ESPINACA.',
+          'HERVIR EL POLLO Y LA PAPA EN AGUA CON SAL HASTA QUE ESTÉN TIERNOS.',
+          'INCORPORAR LA SÉMOLA EN FORMA DE LLUVIA REMOVIENDO HASTA ESPESAR, LUEGO AÑADIR LA ESPINACA Y EL ACEITE DE OLIVA Y COCINAR UNOS MINUTOS MÁS.',
+          'SERVIR EN UN PLATO HONDO.'
+        ],
+        photoDataUrl: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80'
+      }
+    ];
+
+    const RECIPE_VISUAL_GALLERY = {
+      'card-001': 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=800&q=80',
+      'card-002': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+      'card-003': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80',
+      'card-004': 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&q=80',
+      'card-005': 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80',
+      'card-006': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80',
+      'card-007': 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?auto=format&fit=crop&w=800&q=80',
+      'card-008': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+      'card-009': 'https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=800&q=80',
+      'card-010': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
+      'card-011': 'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=800&q=80',
+      'card-012': 'https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=800&q=80',
+      'card-013': 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80',
+      'card-014': 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80',
+      'card-015': 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=800&q=80',
+      'card-016': 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=800&q=80',
+      'card-017': 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=800&q=80',
+      'card-018': 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80',
+      'card-019': 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=800&q=80',
+      'card-020': 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+      'card-021': 'https://images.unsplash.com/photo-1495214783159-3503fd1b572d?auto=format&fit=crop&w=800&q=80',
+      'card-022': 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=800&q=80',
+      'card-023': 'https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?auto=format&fit=crop&w=800&q=80',
+      'card-024': 'https://images.unsplash.com/photo-1525351484163-7529414342d8?auto=format&fit=crop&w=800&q=80',
+      'card-025': 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80'
+    };
+
+    const CODE_VISUAL_GALLERY = {
+      'DES-001': 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=800&q=80',
+      'MER.M-001': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+      'ALM-001': 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=800&q=80',
+      'MER.V-001': 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&q=80',
+      'CEN-001': 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80'
+    };
+
+    const MEAL_FALLBACK_PHOTOS = {
+      'Desayuno': 'https://images.unsplash.com/photo-1525351484163-7529414342d8?auto=format&fit=crop&w=800&q=80',
+      'Media Mañana': 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=800&q=80',
+      'Almuerzo': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+      'Media Tarde': 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&q=80',
+      'Cena': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80'
+    };
+
+    const DEFAULT_MOLECULES = {
+      'Cardíacas': {
+        title: 'Molécula Calórica — Enfermedades Cardíacas (1400 kcal)',
+        subtitle: 'Distribución calórica establecida en 1400 kcal/día: 50% HC, 20% Proteínas y 30% Lípidos.',
+        kcal: 1400,
+        choPct: 50,
+        proPct: 20,
+        fatPct: 30,
+        notes: '1400 kcal/día · 50% HC · 20% Proteínas · 30% Lípidos. Control de sodio, grasas saturadas y colesterol.'
+      },
+      'Respiratorias': {
+        title: 'Molécula Calórica — Enfermedades Respiratorias (1400 kcal)',
+        subtitle: 'Distribución calórica establecida en 1400 kcal/día: 40% HC, 20% Proteínas y 40% Lípidos.',
+        kcal: 1400,
+        choPct: 40,
+        proPct: 20,
+        fatPct: 40,
+        notes: '1400 kcal/día · 40% HC · 20% Proteínas · 40% Lípidos. Soporte proteico y modulación energética.'
+      }
+    };
+
+    const MEAL_PREFIX_MAP = {
+      'Desayuno': 'DES',
+      'Media Mañana': 'MER.M',
+      'Almuerzo': 'ALM',
+      'Media Tarde': 'MER.V',
+      'Cena': 'CEN'
+    };
+
+    const MEAL_DISPLAY_MAP = {
+      'Desayuno': 'Desayuno (DES)',
+      'Media Mañana': 'Merienda Matutina (MER.M)',
+      'Almuerzo': 'Almuerzo (ALM)',
+      'Media Tarde': 'Merienda Vespertina (MER.V)',
+      'Cena': 'Cena (CEN)'
+    };
+
+    function getMealPrefix(meal) {
+      return MEAL_PREFIX_MAP[meal] || 'REC';
+    }
+
+    function getMealDisplay(meal) {
+      return MEAL_DISPLAY_MAP[meal] || meal;
+    }
+
+    function getNextCodeForMeal(meal) {
+      const prefix = getMealPrefix(meal);
+      let maxNum = 0;
+      recipes.forEach(r => {
+        if (r.code && r.code.toUpperCase().startsWith(prefix + '-')) {
+          const numPart = parseInt(r.code.split('-')[1], 10);
+          if (!isNaN(numPart) && numPart > maxNum) maxNum = numPart;
+        }
+      });
+      return `${prefix}-${String(maxNum + 1).padStart(3, '0')}`;
+    }
+
+    function getRecipePhotoUrl(recipe) {
+      if (recipe && typeof recipe.photoDataUrl === 'string' && recipe.photoDataUrl.trim() !== '' && !recipe.photoDataUrl.startsWith('data:image/svg+xml')) {
+        return recipe.photoDataUrl.trim();
+      }
+      if (recipe && recipe.id && RECIPE_VISUAL_GALLERY[recipe.id]) {
+        return RECIPE_VISUAL_GALLERY[recipe.id];
+      }
+      const normCode = String(recipe?.code || '').trim().toUpperCase();
+      if (normCode && CODE_VISUAL_GALLERY[normCode]) {
+        return CODE_VISUAL_GALLERY[normCode];
+      }
+      if (recipe && recipe.meal && MEAL_FALLBACK_PHOTOS[recipe.meal]) {
+        return MEAL_FALLBACK_PHOTOS[recipe.meal];
+      }
+      return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80';
+    }
+
+    function buildInitialRecipes() {
+      const seenKeys = new Set();
+      return CARDIAC_DOCUMENT_RECIPES.filter(r => {
+        const key = `${String(r.disease || '').trim().toUpperCase()}::${String(r.code || '').trim().toUpperCase()}`;
+        if (!key.endsWith('::')) {
+          if (seenKeys.has(key)) return false;
+          seenKeys.add(key);
+        }
+        return true;
+      }).map(r => {
+        const copy = JSON.parse(JSON.stringify(r));
+        copy.photoDataUrl = getRecipePhotoUrl(copy);
+        return copy;
+      });
+    }
+
+    function ensureRecipeMacros(r) {
+      const resolvedPhoto = getRecipePhotoUrl(r);
+      return {
+        ...r,
+        prepTime: r.prepTime || '',
+        totalCost: r.totalCost || '',
+        utensils: r.utensils || '',
+        photoDataUrl: resolvedPhoto,
+        kcal: typeof r.kcal === 'number' && !isNaN(r.kcal) ? r.kcal : 0,
+        protein: typeof r.protein === 'number' && !isNaN(r.protein) ? r.protein : 0,
+        lipids: typeof r.lipids === 'number' && !isNaN(r.lipids) ? r.lipids : 0,
+        carbs: typeof r.carbs === 'number' && !isNaN(r.carbs) ? r.carbs : 0
+      };
+    }
+
+    // =========================================================================
+    // 3. ESTADO DE LA APLICACIÓN Y PERSISTENCIA
+    // =========================================================================
+    const STORAGE_KEYS = {
+      RECIPES: 'asan_manual_recipes_v3',
+      MOLECULES: 'asan_manual_molecules_1400_v1',
+      GROUP_INFO: 'asan_manual_group_info_v1'
+    };
+
+    let recipes = [];
+    let molecules = JSON.parse(JSON.stringify(DEFAULT_MOLECULES));
+    let currentView = 'inicio';
+    let selectedDisease = 'Todas';
+    let selectedMeal = 'Todos';
+    let currentRecipeId = null;
+
+    function updateHeroCounts() {
+      const totalEl = document.getElementById('heroTotalBadge');
+      const cardEl = document.getElementById('heroCardiacCount');
+      const respEl = document.getElementById('heroRespCount');
+      const cardiacCount = recipes.filter(r => r.disease === 'Cardíacas').length;
+      const respCount = recipes.filter(r => r.disease === 'Respiratorias').length;
+      if (totalEl) totalEl.textContent = `${recipes.length} Recetas Cargadas`;
+      if (cardEl) cardEl.textContent = String(cardiacCount);
+      if (respEl) respEl.textContent = String(respCount);
+    }
+
+    function loadState() {
+      try {
+        const savedRecipes = localStorage.getItem(STORAGE_KEYS.RECIPES);
+        if (savedRecipes) {
+          const parsed = JSON.parse(savedRecipes);
+          const expectedCount = CARDIAC_DOCUMENT_RECIPES.length;
+          const hasResp = Array.isArray(parsed) && parsed.some(r => r.disease === 'Respiratorias');
+          if (Array.isArray(parsed) && parsed.length >= expectedCount && hasResp) {
+            recipes = parsed.map(ensureRecipeMacros);
+          } else {
+            recipes = buildInitialRecipes();
+            saveRecipesToStorage();
+          }
+        } else {
+          recipes = buildInitialRecipes();
+          saveRecipesToStorage();
+        }
+      } catch (e) {
+        recipes = buildInitialRecipes();
+      }
+
+      try {
+        const savedMol = localStorage.getItem(STORAGE_KEYS.MOLECULES);
+        if (savedMol) {
+          const parsedMol = JSON.parse(savedMol);
+          molecules = {
+            'Cardíacas': Object.assign({}, DEFAULT_MOLECULES['Cardíacas'], parsedMol['Cardíacas'] || {}),
+            'Respiratorias': Object.assign({}, DEFAULT_MOLECULES['Respiratorias'], parsedMol['Respiratorias'] || {})
+          };
+        } else {
+          molecules = JSON.parse(JSON.stringify(DEFAULT_MOLECULES));
+        }
+      } catch (e) {
+        molecules = JSON.parse(JSON.stringify(DEFAULT_MOLECULES));
+      }
+
+      try {
+        const savedInfo = localStorage.getItem(STORAGE_KEYS.GROUP_INFO);
+        if (savedInfo) {
+          const info = JSON.parse(savedInfo);
+          const subjEl = document.getElementById('inputSubject');
+          const profEl = document.getElementById('inputProfessor');
+          const memEl = document.getElementById('inputMembers');
+          if (subjEl) subjEl.value = info.subject || 'Administración de Servicios';
+          if (profEl) profEl.value = info.professor || 'Lic. Ana Patricia Thorrez Michel';
+          if (memEl) {
+            const rawMembers = info.members || 'Anahi Stefany Amachuy Avendaño\nJulio Alejandro Diaz Chigua\nAngie Elena Rios Chumacero';
+            memEl.value = rawMembers.includes('\n')
+              ? rawMembers
+              : rawMembers.split(/\s+-\s+/).map(n => n.trim()).filter(Boolean).join('\n');
+          }
+        }
+      } catch (e) {
+        // Ignorar errores de lectura inicial
+      }
+
+      updateHeroCounts();
+    }
+
+    function saveRecipesToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.RECIPES, JSON.stringify(recipes));
+      } catch (e) {
+        showToast('Aviso: no se pudo guardar en almacenamiento local (límite de espacio).');
+      }
+      updateHeroCounts();
+    }
+
+    function saveGroupInfo() {
+      const info = {
+        subject: document.getElementById('inputSubject')?.value.trim() || '',
+        professor: document.getElementById('inputProfessor')?.value.trim() || '',
+        members: document.getElementById('inputMembers')?.value.trim() || ''
+      };
+      localStorage.setItem(STORAGE_KEYS.GROUP_INFO, JSON.stringify(info));
+      showToast('Datos académicos guardados.');
+    }
+
+    function saveCaloricMolecules() {
+      ['Cardíacas', 'Respiratorias'].forEach(key => {
+        const kcalEl = document.getElementById(`mol-kcal-${key}`);
+        const choEl = document.getElementById(`mol-cho-${key}`);
+        const proEl = document.getElementById(`mol-pro-${key}`);
+        const fatEl = document.getElementById(`mol-fat-${key}`);
+        const notesEl = document.getElementById(`mol-notes-${key}`);
+
+        if (kcalEl && choEl && proEl && fatEl && notesEl) {
+          molecules[key].kcal = Number(kcalEl.value) || 1400;
+          molecules[key].choPct = Number(choEl.value) || 0;
+          molecules[key].proPct = Number(proEl.value) || 0;
+          molecules[key].fatPct = Number(fatEl.value) || 0;
+          molecules[key].notes = notesEl.value.trim();
+        }
+      });
+
+      localStorage.setItem(STORAGE_KEYS.MOLECULES, JSON.stringify(molecules));
+      renderMolecules();
+      showToast('Moléculas calóricas actualizadas.');
+    }
+
+    function showToast(msg) {
+      const banner = document.getElementById('toastBanner');
+      const text = document.getElementById('toastMessage');
+      if (!banner || !text) return;
+      text.textContent = msg;
+      banner.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 3000);
+    }
+
+    // =========================================================================
+    // 4. NAVEGACIÓN ENTRE VISTAS
+    // =========================================================================
+    function navigateTo(viewName, disease = null, meal = null) {
+      currentView = viewName;
+
+      document.getElementById('view-inicio')?.classList.toggle('hidden', viewName !== 'inicio');
+      document.getElementById('view-menu')?.classList.toggle('hidden', viewName !== 'menu');
+      document.getElementById('view-ficha')?.classList.toggle('hidden', viewName !== 'ficha');
+
+      if (viewName === 'inicio') {
+        updateHeroCounts();
+      } else if (viewName === 'menu') {
+        if (disease) selectedDisease = disease;
+        if (meal) selectedMeal = meal;
+        updateFilterButtons();
+        renderMolecules();
+        renderManualCombinerSelectors();
+        renderRecipes();
+      } else if (viewName === 'ficha' && currentRecipeId) {
+        renderRecipeDetail(currentRecipeId);
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openRecipeDetail(recipeId) {
+      currentRecipeId = recipeId;
+      navigateTo('ficha');
+    }
+
+    // =========================================================================
+    // 5. RENDERIZADO DE MOLÉCULAS CALÓRICAS (1400 KCAL)
+    // =========================================================================
+    function computeGrams(kcal, pct, kcalPerGram) {
+      return Math.round(((kcal * (pct / 100)) / kcalPerGram) * 10) / 10;
+    }
+
+    function renderMolecules() {
+      const container = document.getElementById('moleculesContainer');
+      if (!container) return;
+
+      const items = [
+        { key: 'Cardíacas', badgeClass: 'bg-rose-100 text-rose-800', borderClass: 'border-rose-200', accentText: 'text-rose-700' },
+        { key: 'Respiratorias', badgeClass: 'bg-blue-100 text-blue-800', borderClass: 'border-blue-200', accentText: 'text-blue-700' }
+      ];
+
+      container.innerHTML = items.map(cfg => {
+        const m = molecules[cfg.key] || DEFAULT_MOLECULES[cfg.key];
+        const choG = computeGrams(m.kcal, m.choPct, 4);
+        const proG = computeGrams(m.kcal, m.proPct, 4);
+        const fatG = computeGrams(m.kcal, m.fatPct, 9);
+        const totalPct = Number(m.choPct) + Number(m.proPct) + Number(m.fatPct);
+
+        return `
+          <div class="rounded-2xl border ${cfg.borderClass} bg-white p-5 shadow-sm space-y-4">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <span class="inline-block rounded-full ${cfg.badgeClass} px-3 py-1 text-xs font-bold">
+                  Enfermedades ${cfg.key}
+                </span>
+                <h3 class="mt-2 text-lg font-bold text-slate-900">${escapeHtml(m.title)}</h3>
+                <p class="text-xs text-slate-500">${escapeHtml(m.subtitle)}</p>
+              </div>
+              <div class="text-right">
+                <label class="block text-[11px] font-bold uppercase text-slate-400">VCT (kcal/día)</label>
+                <input id="mol-kcal-${cfg.key}" type="number" min="800" max="5000" step="50" value="${m.kcal}" class="mt-0.5 w-28 rounded-lg border border-slate-300 px-2.5 py-1 text-right text-sm font-extrabold ${cfg.accentText} focus:border-teal-600 focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 rounded-xl bg-slate-50 p-3.5 border border-slate-100">
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-slate-500">Carbohidratos (%)</label>
+                <input id="mol-cho-${cfg.key}" type="number" min="0" max="100" value="${m.choPct}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm font-bold text-slate-800" />
+                <div class="mt-1 text-xs font-semibold text-slate-600">${choG} g / día</div>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-slate-500">Proteínas (%)</label>
+                <input id="mol-pro-${cfg.key}" type="number" min="0" max="100" value="${m.proPct}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm font-bold text-slate-800" />
+                <div class="mt-1 text-xs font-semibold text-slate-600">${proG} g / día</div>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold uppercase text-slate-500">Lípidos (%)</label>
+                <input id="mol-fat-${cfg.key}" type="number" min="0" max="100" value="${m.fatPct}" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm font-bold text-slate-800" />
+                <div class="mt-1 text-xs font-semibold text-slate-600">${fatG} g / día</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-slate-500">Suma porcentual: <strong class="${totalPct === 100 ? 'text-emerald-700' : 'text-amber-700'}">${totalPct}%</strong></span>
+              <span class="text-slate-400">HC: 4 kcal/g · PRO: 4 kcal/g · LÍPIDOS: 9 kcal/g</span>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase text-slate-400">Criterios clínicos y dietoterapéuticos</label>
+              <input id="mol-notes-${cfg.key}" type="text" value="${escapeAttr(m.notes)}" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 focus:border-teal-600 focus:bg-white focus:outline-none" />
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 6. FILTROS Y LISTADO DE RECETAS
+    // =========================================================================
+    function setDiseaseFilter(disease) {
+      selectedDisease = disease;
+      updateFilterButtons();
+      renderRecipes();
+    }
+
+    function setMealFilter(meal) {
+      selectedMeal = meal;
+      updateFilterButtons();
+      renderRecipes();
+    }
+
+    function resetFilters() {
+      selectedDisease = 'Todas';
+      selectedMeal = 'Todos';
+      const searchEl = document.getElementById('searchInput');
+      const codeEl = document.getElementById('codeSearchInput');
+      if (searchEl) searchEl.value = '';
+      if (codeEl) codeEl.value = '';
+      updateFilterButtons();
+      renderRecipes();
+    }
+
+    function updateFilterButtons() {
+      ['Todas', 'Cardíacas', 'Respiratorias'].forEach(d => {
+        const btn = document.getElementById(`tab-${d}`);
+        if (!btn) return;
+        const active = selectedDisease === d;
+        btn.className = 'disease-tab rounded-xl px-4 py-2.5 text-sm font-bold transition ' + (
+          active
+            ? 'bg-teal-600 text-white shadow-sm'
+            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+        );
+      });
+
+      document.querySelectorAll('.meal-btn').forEach(btn => {
+        const meal = btn.getAttribute('data-meal');
+        const active = selectedMeal === meal;
+        btn.className = 'meal-btn rounded-lg px-3 py-1.5 text-xs font-semibold transition ' + (
+          active
+            ? 'bg-slate-900 text-white'
+            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+        );
+      });
+
+      const cardiacCount = recipes.filter(r => r.disease === 'Cardíacas').length;
+      const respCount = recipes.filter(r => r.disease === 'Respiratorias').length;
+      const allCountEl = document.getElementById('count-Todas');
+      const cardCountEl = document.getElementById('count-Cardíacas');
+      const respCountEl = document.getElementById('count-Respiratorias');
+      if (allCountEl) allCountEl.textContent = String(recipes.length);
+      if (cardCountEl) cardCountEl.textContent = String(cardiacCount);
+      if (respCountEl) respCountEl.textContent = String(respCount);
+    }
+
+    function normalizeCode(str) {
+      return String(str || '').toUpperCase().replace(/\s+/g, '');
+    }
+
+    function getFilteredRecipes() {
+      const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+      const codeQ = normalizeCode(document.getElementById('codeSearchInput')?.value || '');
+
+      return recipes.filter(r => {
+        const matchDisease = selectedDisease === 'Todas' || r.disease === selectedDisease;
+        const matchMeal = selectedMeal === 'Todos' || r.meal === selectedMeal;
+        const matchCode = !codeQ || normalizeCode(r.code).includes(codeQ);
+        const matchQuery = !q ||
+          r.code.toLowerCase().includes(q) ||
+          r.name.toLowerCase().includes(q) ||
+          r.meal.toLowerCase().includes(q) ||
+          getMealDisplay(r.meal).toLowerCase().includes(q) ||
+          r.disease.toLowerCase().includes(q) ||
+          r.ingredients.some(ing => ing.item.toLowerCase().includes(q));
+        return matchDisease && matchMeal && matchCode && matchQuery;
+      });
+    }
+
+    function renderRecipes() {
+      const list = getFilteredRecipes();
+      const grid = document.getElementById('recipesGrid');
+      const counter = document.getElementById('resultsCounter');
+      if (!grid) return;
+
+      if (counter) {
+        counter.textContent = `Mostrando ${list.length} de ${recipes.length} recetas estandarizadas`;
+      }
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+            <p class="text-base font-bold text-slate-700">No se encontraron recetas con ese filtro o código</p>
+            <p class="mt-1 text-sm text-slate-500">Prueba buscando códigos como DES-001, MER.M-001, ALM-001, MER.V-001 o CEN-001.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = list.map(r => {
+        const isCardiac = r.disease === 'Cardíacas';
+        const badgeStyle = isCardiac
+          ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200'
+          : 'bg-blue-50 text-blue-700 ring-1 ring-blue-200';
+        const photoSrc = getRecipePhotoUrl(r);
+        const fallbackSrc = MEAL_FALLBACK_PHOTOS[r.meal] || 'https://placehold.co/800x420/f1f5f9/334155?text=Receta+Estandarizada';
+        const cardImg = `<img src="${escapeAttr(photoSrc)}" alt="${escapeAttr(r.name)}" loading="eager" onerror="this.onerror=null;this.src='${escapeAttr(fallbackSrc)}';" class="h-44 w-full rounded-xl object-cover border border-slate-100" />`;
+
+        return `
+          <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-teal-400 hover:shadow-md transition">
+            <div class="space-y-3">
+              ${cardImg}
+              <div class="flex items-center justify-between gap-2">
+                <span class="rounded-lg bg-slate-900 px-2.5 py-1 text-xs font-extrabold tracking-wide text-white">
+                  ${escapeHtml(r.code)}
+                </span>
+                <span class="rounded-full px-2.5 py-1 text-xs font-bold ${badgeStyle}">
+                  ${escapeHtml(r.disease)}
+                </span>
+              </div>
+
+              <div class="text-xs font-semibold text-teal-700">${escapeHtml(getMealDisplay(r.meal))} · ${r.servings} ${r.servings === 1 ? 'porción' : 'porciones'}</div>
+              <h3 class="text-sm font-bold leading-snug text-slate-900 uppercase">${escapeHtml(r.name)}</h3>
+
+              ${(r.prepTime || r.totalCost) ? `
+                <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] font-medium text-slate-500">
+                  ${r.prepTime ? `<span>Tiempo: <strong class="text-slate-700">${escapeHtml(r.prepTime)}</strong></span>` : ''}
+                  ${r.totalCost ? `<span>Costo: <strong class="text-slate-700">${escapeHtml(r.totalCost)}</strong></span>` : ''}
+                </div>
+              ` : ''}
+
+              <div class="grid grid-cols-4 gap-1.5 rounded-xl border border-teal-100 bg-teal-50/60 p-2 text-center text-[11px]">
+                <div>
+                  <span class="block text-[10px] font-semibold uppercase text-slate-500">Kcal</span>
+                  <span class="font-extrabold text-teal-800">${r.kcal}</span>
+                </div>
+                <div>
+                  <span class="block text-[10px] font-semibold uppercase text-slate-500">Prot.</span>
+                  <span class="font-bold text-slate-800">${r.protein}g</span>
+                </div>
+                <div>
+                  <span class="block text-[10px] font-semibold uppercase text-slate-500">Lípidos</span>
+                  <span class="font-bold text-slate-800">${r.lipids}g</span>
+                </div>
+                <div>
+                  <span class="block text-[10px] font-semibold uppercase text-slate-500">HC</span>
+                  <span class="font-bold text-slate-800">${r.carbs}g</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="openRecipeById('${r.id}')" class="rounded-xl border border-slate-300 bg-white px-2.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+                  Modificar
+                </button>
+                <button type="button" id="del-btn-${r.id}" onclick="requestDeleteRecipe('${r.id}')" class="rounded-xl border border-rose-200 bg-rose-50 px-2.5 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition">
+                  Borrar
+                </button>
+              </div>
+              <button type="button" onclick="openRecipeDetail('${r.id}')" class="inline-flex items-center gap-1 rounded-xl bg-teal-600 px-3 py-2 text-xs font-bold text-white hover:bg-teal-700 transition">
+                <span>Ver Ficha</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 6B. COMBINADOR AUTOMÁTICO Y MANUAL DE MENÚ DIARIO (5 TIEMPOS DE COMIDA)
+    // =========================================================================
+    let currentCombinedMenu = [];
+
+    function generateDailyCombination() {
+      const diseaseChoice = document.getElementById('combinerDiseaseSelect').value;
+      const mealTimes = ['Desayuno', 'Media Mañana', 'Almuerzo', 'Media Tarde', 'Cena'];
+      const selectedList = [];
+
+      mealTimes.forEach(meal => {
+        const pool = recipes.filter(r =>
+          r.meal === meal && (diseaseChoice === 'Todas' || r.disease === diseaseChoice)
+        );
+        if (pool.length > 0) {
+          const randomIndex = Math.floor(Math.random() * pool.length);
+          selectedList.push(pool[randomIndex]);
+        }
+      });
+
+      if (selectedList.length === 0) {
+        showToast('No hay recetas cargadas para combinar automáticamente.');
+        return;
+      }
+
+      currentCombinedMenu = selectedList;
+      renderCombinedMenu();
+      showToast('Menú diario combinado automáticamente.');
+    }
+
+    function toggleManualCombiner() {
+      const panel = document.getElementById('manualCombinerPanel');
+      if (!panel) return;
+      const isHidden = panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', !isHidden);
+      if (isHidden) {
+        renderManualCombinerSelectors();
+      }
+    }
+
+    function renderManualCombinerSelectors() {
+      const grid = document.getElementById('manualCombinerGrid');
+      const diseaseSelect = document.getElementById('combinerDiseaseSelect');
+      if (!grid || !diseaseSelect) return;
+
+      const diseaseChoice = diseaseSelect.value;
+      const mealTimes = ['Desayuno', 'Media Mañana', 'Almuerzo', 'Media Tarde', 'Cena'];
+
+      grid.innerHTML = mealTimes.map((meal, idx) => {
+        const options = recipes.filter(r =>
+          r.meal === meal && (diseaseChoice === 'Todas' || r.disease === diseaseChoice)
+        );
+        const currentSelected = currentCombinedMenu.find(item => item.meal === meal);
+        const optionsHtml = options.map(opt => `
+          <option value="${opt.id}" ${currentSelected && currentSelected.id === opt.id ? 'selected' : ''}>
+            ${escapeHtml(opt.code)} · ${escapeHtml(opt.name)} (${opt.kcal} kcal)
+          </option>
+        `).join('');
+
+        return `
+          <div class="space-y-1.5 rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <label for="manual-meal-select-${idx}" class="block text-[11px] font-bold uppercase tracking-wide text-teal-800">
+              ${escapeHtml(getMealDisplay(meal))}
+            </label>
+            <select id="manual-meal-select-${idx}" data-meal="${meal}" class="manual-meal-select w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-medium text-slate-800 focus:border-teal-600 focus:outline-none">
+              <option value="">-- Sin seleccionar (${options.length}) --</option>
+              ${optionsHtml}
+            </select>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function applyManualCombination() {
+      const selects = Array.from(document.querySelectorAll('.manual-meal-select'));
+      const chosen = [];
+      selects.forEach(sel => {
+        const val = sel.value;
+        if (val) {
+          const found = recipes.find(r => r.id === val);
+          if (found) chosen.push(found);
+        }
+      });
+
+      if (chosen.length === 0) {
+        showToast('Selecciona al menos una receta en el combinador manual.');
+        return;
+      }
+
+      currentCombinedMenu = chosen;
+      renderCombinedMenu();
+      showToast(`Combinación manual aplicada (${chosen.length} tiempos seleccionados).`);
+    }
+
+    function renderCombinedMenu() {
+      const container = document.getElementById('combinerResultContainer');
+      const summaryBar = document.getElementById('combinerSummaryBar');
+      if (!container || !summaryBar) return;
+
+      if (!currentCombinedMenu || currentCombinedMenu.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full rounded-xl border border-dashed border-teal-200 bg-white/80 p-4 text-center text-xs text-slate-500">
+            Usa el <strong>"Combinador Automático"</strong> o el <strong>"Combinador Manual"</strong> para armar un menú completo de Desayuno (DES), Merienda Matutina (MER.M), Almuerzo (ALM), Merienda Vespertina (MER.V) y Cena (CEN).
+          </div>
+        `;
+        summaryBar.classList.add('hidden');
+        return;
+      }
+
+      let totalKcal = 0;
+      let totalPro = 0;
+      let totalLip = 0;
+      let totalHC = 0;
+
+      container.innerHTML = currentCombinedMenu.map(r => {
+        totalKcal += Number(r.kcal) || 0;
+        totalPro += Number(r.protein) || 0;
+        totalLip += Number(r.lipids) || 0;
+        totalHC += Number(r.carbs) || 0;
+        const isCardiac = r.disease === 'Cardíacas';
+        const dotColor = isCardiac ? 'bg-rose-500' : 'bg-blue-500';
+        const thumbUrl = getRecipePhotoUrl(r);
+        const thumbFallback = MEAL_FALLBACK_PHOTOS[r.meal] || 'https://placehold.co/600x300/f1f5f9/334155?text=Receta';
+
+        return `
+          <div class="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xs hover:border-teal-500 transition">
+            <div class="space-y-1.5">
+              <img src="${escapeAttr(thumbUrl)}" alt="${escapeAttr(r.name)}" onerror="this.onerror=null;this.src='${escapeAttr(thumbFallback)}';" class="h-24 w-full rounded-lg object-cover border border-slate-100 mb-1.5" />
+              <div class="flex items-center justify-between gap-1">
+                <span class="rounded bg-slate-900 px-2 py-0.5 text-[11px] font-bold text-white">${escapeHtml(r.code)}</span>
+                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500">
+                  <span class="h-2 w-2 rounded-full ${dotColor}"></span>
+                  ${escapeHtml(r.disease)}
+                </span>
+              </div>
+              <div class="text-[11px] font-bold uppercase tracking-wide text-teal-700">${escapeHtml(getMealDisplay(r.meal))}</div>
+              <h4 class="text-xs font-bold leading-snug text-slate-900 line-clamp-2">${escapeHtml(r.name)}</h4>
+              <div class="rounded-lg bg-slate-50 px-2 py-1 text-[10px] font-semibold text-slate-600">
+                ${r.kcal} kcal · P:${r.protein}g · L:${r.lipids}g · HC:${r.carbs}g
+              </div>
+            </div>
+            <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-end">
+              <button type="button" onclick="openRecipeDetail('${r.id}')" class="text-xs font-bold text-teal-700 hover:underline">
+                Abrir ficha →
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('combinerTotalLabel').textContent = `${currentCombinedMenu.length} tiempos de comida (${currentCombinedMenu.map(r => r.code).join(' · ')})`;
+      document.getElementById('combinerMacrosLabel').textContent = `Total diario: ${Math.round(totalKcal)} kcal · PRO: ${totalPro.toFixed(1)}g · LIP: ${totalLip.toFixed(1)}g · HC: ${totalHC.toFixed(1)}g`;
+      summaryBar.classList.remove('hidden');
+      summaryBar.classList.add('flex');
+    }
+
+    // =========================================================================
+    // 7. RENDERIZADO DE FICHA TÉCNICA ESTANDARIZADA COMPLETA
+    // =========================================================================
+    function renderRecipeDetail(recipeId) {
+      const recipe = recipes.find(r => r.id === recipeId);
+      if (!recipe) {
+        navigateTo('menu');
+        return;
+      }
+
+      const isCardiac = recipe.disease === 'Cardíacas';
+      const mol = molecules[isCardiac ? 'Cardíacas' : 'Respiratorias'];
+      const tagClass = isCardiac
+        ? 'bg-rose-100 text-rose-800 border-rose-200'
+        : 'bg-blue-100 text-blue-800 border-blue-200';
+
+      const displayPhoto = getRecipePhotoUrl(recipe);
+      const fichaFallback = MEAL_FALLBACK_PHOTOS[recipe.meal] || 'https://placehold.co/800x480/f1f5f9/334155?text=Ficha+Tecnica';
+      const photoMarkup = `<img src="${escapeAttr(displayPhoto)}" alt="${escapeAttr(recipe.name)}" loading="eager" onerror="this.onerror=null;this.src='${escapeAttr(fichaFallback)}';" class="h-64 w-full rounded-2xl object-cover border border-slate-200" />`;
+
+      const hasIngredientCosts = recipe.ingredients.some(ing => ing.cost);
+
+      const ingredientsRows = recipe.ingredients.map((ing, idx) => `
+        <tr class="border-b border-slate-100 last:border-none">
+          <td class="py-2.5 pl-3 pr-2 text-xs font-semibold text-slate-400">${idx + 1}</td>
+          <td class="py-2.5 pr-4 text-sm font-medium text-slate-800 uppercase">${escapeHtml(ing.item)}</td>
+          <td class="py-2.5 pr-3 text-right text-sm font-bold text-teal-800">${escapeHtml(ing.qty)}</td>
+          ${hasIngredientCosts ? `<td class="py-2.5 pr-3 text-right text-xs font-semibold text-slate-600">${escapeHtml(ing.cost || '-')}</td>` : ''}
+        </tr>
+      `).join('');
+
+      const stepsList = recipe.steps.map((step, idx) => `
+        <li class="flex items-start gap-3 rounded-xl bg-slate-50 p-3.5 border border-slate-100">
+          <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-600 text-xs font-bold text-white">
+            ${idx + 1}
+          </span>
+          <p class="text-sm leading-relaxed text-slate-700 uppercase">${escapeHtml(step)}</p>
+        </li>
+      `).join('');
+
+      document.getElementById('fichaContent').innerHTML = `
+        <!-- Encabezado de Ficha -->
+        <div class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 pb-6">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="rounded-full border px-3 py-1 text-xs font-bold ${tagClass}">
+                Enfermedades ${escapeHtml(recipe.disease)}
+              </span>
+              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                Categoría: ${escapeHtml(getMealDisplay(recipe.meal))}
+              </span>
+              <span class="rounded-full bg-slate-900 px-3 py-1 text-xs font-bold text-white">
+                Código: ${escapeHtml(recipe.code)}
+              </span>
+            </div>
+            <h2 class="text-xl font-extrabold text-slate-900 sm:text-2xl uppercase">${escapeHtml(recipe.name)}</h2>
+            <p class="text-xs text-slate-500">Molécula calórica de referencia: ${mol.kcal} kcal/día (CHO ${mol.choPct}% · PRO ${mol.proPct}% · Lípidos ${mol.fatPct}%)</p>
+          </div>
+        </div>
+
+        <!-- Fotografía + Indicadores Técnicos -->
+        <div class="grid gap-6 lg:grid-cols-12">
+          <div class="lg:col-span-5 space-y-3">
+            ${photoMarkup}
+            <label class="no-print flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+              <span>Subir / Cambiar Fotografía</span>
+              <input type="file" accept="image/*" onchange="handlePhotoUpload(event, '${recipe.id}')" class="hidden" />
+            </label>
+          </div>
+
+          <div class="lg:col-span-7 grid gap-3.5 sm:grid-cols-2 content-start">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Número de Porciones</span>
+              <p class="mt-1 text-lg font-extrabold text-slate-900">${recipe.servings} ${recipe.servings === 1 ? 'porción' : 'porciones'}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Tiempo de Preparación</span>
+              <p class="mt-1 text-lg font-extrabold text-slate-900 uppercase">${escapeHtml(recipe.prepTime || 'Estándar')}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Costo de Preparación</span>
+              <p class="mt-1 text-lg font-extrabold text-slate-900">${escapeHtml(recipe.totalCost || 'Según insumos')}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Ingredientes Estandarizados</span>
+              <p class="mt-1 text-lg font-extrabold text-slate-900">${recipe.ingredients.length} insumos</p>
+            </div>
+            <div class="sm:col-span-2 grid grid-cols-2 gap-3 rounded-2xl border border-teal-200 bg-teal-50/70 p-4 sm:grid-cols-4">
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-teal-800">Kcal</span>
+                <p class="mt-0.5 text-lg font-extrabold text-teal-950">${recipe.kcal}</p>
+              </div>
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-teal-800">Proteínas</span>
+                <p class="mt-0.5 text-lg font-extrabold text-slate-900">${recipe.protein} g</p>
+              </div>
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-teal-800">Lípidos</span>
+                <p class="mt-0.5 text-lg font-extrabold text-slate-900">${recipe.lipids} g</p>
+              </div>
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-teal-800">HC</span>
+                <p class="mt-0.5 text-lg font-extrabold text-slate-900">${recipe.carbs} g</p>
+              </div>
+            </div>
+            ${recipe.utensils ? `
+              <div class="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Utensilios</span>
+                <p class="mt-1 text-xs leading-relaxed text-slate-700 uppercase">${escapeHtml(recipe.utensils)}</p>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <!-- Ingredientes y Gramajes Exactos + Procedimiento -->
+        <div class="grid gap-8 lg:grid-cols-12 pt-2">
+          <div class="lg:col-span-5 space-y-3">
+            <h3 class="text-lg font-bold text-slate-900">Ingredientes y Cantidades</h3>
+            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold uppercase text-slate-500">
+                  <tr>
+                    <th class="py-2.5 pl-3 pr-2">#</th>
+                    <th class="py-2.5 pr-4">Ingrediente</th>
+                    <th class="py-2.5 pr-3 text-right">Cantidad</th>
+                    ${hasIngredientCosts ? `<th class="py-2.5 pr-3 text-right">Costo</th>` : ''}
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 px-3">
+                  ${ingredientsRows}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 space-y-3">
+            <h3 class="text-lg font-bold text-slate-900">Preparación Paso a Paso</h3>
+            <ol class="space-y-2.5">
+              ${stepsList}
+            </ol>
+          </div>
+        </div>
+      `;
+
+      // Actualizar botones Anterior / Siguiente según lista filtrada
+      const list = getFilteredRecipes();
+      const idxInFiltered = list.findIndex(r => r.id === recipeId);
+      const prevBtn = document.getElementById('prevRecipeBtn');
+      const nextBtn = document.getElementById('nextRecipeBtn');
+
+      prevBtn.disabled = idxInFiltered <= 0;
+      prevBtn.classList.toggle('opacity-40', idxInFiltered <= 0);
+      prevBtn.classList.toggle('cursor-not-allowed', idxInFiltered <= 0);
+
+      nextBtn.disabled = idxInFiltered < 0 || idxInFiltered >= list.length - 1;
+      nextBtn.classList.toggle('opacity-40', idxInFiltered < 0 || idxInFiltered >= list.length - 1);
+      nextBtn.classList.toggle('cursor-not-allowed', idxInFiltered < 0 || idxInFiltered >= list.length - 1);
+    }
+
+    function stepRecipe(delta) {
+      const list = getFilteredRecipes();
+      const idx = list.findIndex(r => r.id === currentRecipeId);
+      const target = list[idx + delta];
+      if (target) {
+        currentRecipeId = target.id;
+        renderRecipeDetail(target.id);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function handlePhotoUpload(event, recipeId) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      if (file.size > 1.5 * 1024 * 1024) {
+        showToast('Selecciona una imagen menor a 1.5 MB para conservar el rendimiento.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const idx = recipes.findIndex(r => r.id === recipeId);
+        if (idx !== -1) {
+          recipes[idx].photoDataUrl = e.target.result;
+          saveRecipesToStorage();
+          renderRecipeDetail(recipeId);
+          showToast('Fotografía agregada a la ficha técnica.');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // =========================================================================
+    // 8. MODAL CREAR / EDITAR RECETA
+    // =========================================================================
+    function addIngredientRow(itemVal = '', qtyVal = '') {
+      const container = document.getElementById('ingredientRowsContainer');
+      const row = document.createElement('div');
+      row.className = 'ingredient-row grid grid-cols-12 gap-2 items-center';
+      row.innerHTML = `
+        <input type="text" placeholder="Ej. Pechuga de pollo sin piel" value="${escapeAttr(itemVal)}" class="ing-item-input col-span-7 rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-teal-600 focus:outline-none" />
+        <input type="text" placeholder="Ej. 120 g" value="${escapeAttr(qtyVal)}" class="ing-qty-input col-span-4 rounded-xl border border-slate-300 bg-teal-50/40 px-3 py-2 text-sm font-semibold text-teal-900 focus:border-teal-600 focus:bg-white focus:outline-none" />
+        <button type="button" onclick="removeIngredientRow(this)" title="Quitar fila" class="col-span-1 flex h-9 items-center justify-center rounded-xl border border-slate-200 text-xs font-bold text-slate-400 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 transition">
+          ✕
+        </button>
+      `;
+      container.appendChild(row);
+    }
+
+    function removeIngredientRow(btn) {
+      const container = document.getElementById('ingredientRowsContainer');
+      if (container.children.length > 1) {
+        btn.closest('.ingredient-row').remove();
+      } else {
+        const row = btn.closest('.ingredient-row');
+        row.querySelector('.ing-item-input').value = '';
+        row.querySelector('.ing-qty-input').value = '';
+      }
+    }
+
+    function renderIngredientRows(ingredientsList) {
+      const container = document.getElementById('ingredientRowsContainer');
+      container.innerHTML = '';
+      if (Array.isArray(ingredientsList) && ingredientsList.length > 0) {
+        ingredientsList.forEach(ing => addIngredientRow(ing.item, ing.qty));
+      } else {
+        addIngredientRow('', '');
+        addIngredientRow('', '');
+      }
+    }
+
+    function updateSuggestedCodePreview() {
+      const existingId = document.getElementById('editRecipeId').value;
+      if (!existingId) {
+        const meal = document.getElementById('formMeal').value;
+        document.getElementById('formCode').value = getNextCodeForMeal(meal);
+      }
+    }
+
+    function openRecipeById(recipeId) {
+      const found = recipes.find(r => r.id === recipeId);
+      if (found) openRecipeModal(found);
+    }
+
+    function openRecipeModal(recipeToEdit = null) {
+      const modal = document.getElementById('recipeModal');
+      const titleEl = document.getElementById('modalTitle');
+
+      if (recipeToEdit) {
+        titleEl.textContent = `Modificar Ficha Técnica — ${recipeToEdit.code}`;
+        document.getElementById('editRecipeId').value = recipeToEdit.id;
+        document.getElementById('formName').value = recipeToEdit.name;
+        document.getElementById('formDisease').value = recipeToEdit.disease;
+        document.getElementById('formMeal').value = recipeToEdit.meal;
+        document.getElementById('formCode').value = recipeToEdit.code;
+        document.getElementById('formServings').value = recipeToEdit.servings;
+        document.getElementById('formKcal').value = recipeToEdit.kcal ?? 0;
+        document.getElementById('formProtein').value = recipeToEdit.protein ?? 0;
+        document.getElementById('formLipids').value = recipeToEdit.lipids ?? 0;
+        document.getElementById('formCarbs').value = recipeToEdit.carbs ?? 0;
+        renderIngredientRows(recipeToEdit.ingredients);
+        document.getElementById('formSteps').value = recipeToEdit.steps.join('\n');
+      } else {
+        titleEl.textContent = 'Nueva Ficha Técnica Estandarizada';
+        document.getElementById('recipeForm').reset();
+        document.getElementById('editRecipeId').value = '';
+        if (selectedDisease === 'Cardíacas' || selectedDisease === 'Respiratorias') {
+          document.getElementById('formDisease').value = selectedDisease;
+        }
+        if (selectedMeal !== 'Todos') {
+          document.getElementById('formMeal').value = selectedMeal;
+        }
+        renderIngredientRows([]);
+        updateSuggestedCodePreview();
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function editCurrentRecipe() {
+      const found = recipes.find(r => r.id === currentRecipeId);
+      if (found) openRecipeModal(found);
+    }
+
+    function closeRecipeModal() {
+      const modal = document.getElementById('recipeModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleRecipeFormSubmit(event) {
+      event.preventDefault();
+
+      const existingId = document.getElementById('editRecipeId').value;
+      const name = document.getElementById('formName').value.trim();
+      const disease = document.getElementById('formDisease').value;
+      const meal = document.getElementById('formMeal').value;
+      const code = document.getElementById('formCode').value.trim().toUpperCase() || getNextCodeForMeal(meal);
+      const servings = Number(document.getElementById('formServings').value) || 1;
+      const kcal = parseFloat(document.getElementById('formKcal').value) || 0;
+      const protein = parseFloat(document.getElementById('formProtein').value) || 0;
+      const lipids = parseFloat(document.getElementById('formLipids').value) || 0;
+      const carbs = parseFloat(document.getElementById('formCarbs').value) || 0;
+
+      const ingredients = Array.from(document.querySelectorAll('#ingredientRowsContainer .ingredient-row'))
+        .map(row => {
+          const item = row.querySelector('.ing-item-input').value.trim();
+          const qty = row.querySelector('.ing-qty-input').value.trim();
+          return { item, qty: qty || 'A gusto' };
+        })
+        .filter(ing => ing.item.length > 0);
+
+      if (ingredients.length === 0) {
+        showToast('Agrega al menos un ingrediente con su gramaje.');
+        return;
+      }
+
+      const steps = document.getElementById('formSteps').value
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean);
+
+      if (existingId) {
+        const idx = recipes.findIndex(r => r.id === existingId);
+        if (idx !== -1) {
+          recipes[idx] = {
+            ...recipes[idx],
+            code,
+            name,
+            disease,
+            meal,
+            servings,
+            kcal,
+            protein,
+            lipids,
+            carbs,
+            ingredients,
+            steps
+          };
+          saveRecipesToStorage();
+          closeRecipeModal();
+          updateFilterButtons();
+          renderRecipes();
+          renderManualCombinerSelectors();
+          if (currentView === 'ficha') {
+            renderRecipeDetail(existingId);
+          }
+          showToast(`Ficha técnica ${code} actualizada.`);
+        }
+      } else {
+        const prefix = disease === 'Cardíacas' ? 'card' : 'resp';
+        const newId = `${prefix}-${Date.now()}`;
+        const newRecipe = {
+          id: newId,
+          code,
+          disease,
+          name,
+          meal,
+          servings,
+          kcal,
+          protein,
+          lipids,
+          carbs,
+          ingredients,
+          steps,
+          photoDataUrl: ''
+        };
+        recipes.push(newRecipe);
+        saveRecipesToStorage();
+        closeRecipeModal();
+        updateFilterButtons();
+        renderRecipes();
+        renderManualCombinerSelectors();
+        showToast(`Nueva receta ${code} agregada al manual.`);
+      }
+    }
+
+    let pendingDeleteRecipeId = null;
+    let pendingDeleteTimer = null;
+
+    function requestDeleteRecipe(recipeId) {
+      const target = recipes.find(r => r.id === recipeId);
+      if (!target) return;
+
+      if (pendingDeleteRecipeId !== recipeId) {
+        pendingDeleteRecipeId = recipeId;
+        const btn = document.getElementById(`del-btn-${recipeId}`);
+        if (btn) btn.textContent = '¿Confirmar?';
+        showToast(`Haz clic nuevamente en borrar para eliminar ${target.code} (${target.name}).`);
+        clearTimeout(pendingDeleteTimer);
+        pendingDeleteTimer = setTimeout(() => {
+          pendingDeleteRecipeId = null;
+          renderRecipes();
+        }, 4000);
+        return;
+      }
+
+      pendingDeleteRecipeId = null;
+      clearTimeout(pendingDeleteTimer);
+      recipes = recipes.filter(r => r.id !== recipeId);
+      currentCombinedMenu = currentCombinedMenu.filter(r => r.id !== recipeId);
+      saveRecipesToStorage();
+      updateFilterButtons();
+      renderRecipes();
+      renderCombinedMenu();
+      renderManualCombinerSelectors();
+      showToast(`Receta ${target.code} eliminada del manual.`);
+    }
+
+    let pendingDeleteFicha = false;
+    function requestDeleteCurrentRecipe() {
+      if (!currentRecipeId) return;
+      const target = recipes.find(r => r.id === currentRecipeId);
+      if (!target) return;
+
+      if (!pendingDeleteFicha) {
+        pendingDeleteFicha = true;
+        showToast(`Haz clic nuevamente en "Eliminar Receta" para borrar ${target.code}.`);
+        setTimeout(() => { pendingDeleteFicha = false; }, 4000);
+        return;
+      }
+
+      pendingDeleteFicha = false;
+      recipes = recipes.filter(r => r.id !== currentRecipeId);
+      currentCombinedMenu = currentCombinedMenu.filter(r => r.id !== currentRecipeId);
+      currentRecipeId = null;
+      saveRecipesToStorage();
+      showToast(`Receta ${target.code} eliminada.`);
+      navigateTo('menu');
+    }
+
+    let clearAllConfirmPending = false;
+    function confirmClearAllRecipes() {
+      if (!clearAllConfirmPending) {
+        clearAllConfirmPending = true;
+        showToast('Haz clic nuevamente en "Vaciar listado" para confirmar.');
+        setTimeout(() => { clearAllConfirmPending = false; }, 4000);
+        return;
+      }
+      clearAllConfirmPending = false;
+      recipes = [];
+      saveRecipesToStorage();
+      updateFilterButtons();
+      renderRecipes();
+      currentCombinedMenu = [];
+      renderCombinedMenu();
+      renderManualCombinerSelectors();
+      showToast('Listado de recetas vaciado.');
+    }
+
+    // =========================================================================
+    // 9. UTILIDADES DE SEGURIDAD HTML
+    // =========================================================================
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeAttr(str) {
+      return escapeHtml(str);
+    }
+
+    // =========================================================================
+    // 10. INICIALIZACIÓN
+    // =========================================================================
+    function initManualApp() {
+      if (window._manualInitialized) return;
+      window._manualInitialized = true;
+      loadState();
+      updateFilterButtons();
+      renderMolecules();
+      renderCombinedMenu();
+      renderManualCombinerSelectors();
+      renderRecipes();
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initManualApp);
+    } else {
+      initManualApp();
+    }
+  </script>
+</body>
+</html>
